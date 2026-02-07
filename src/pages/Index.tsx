@@ -4,9 +4,10 @@ import { motion } from "framer-motion";
 import AnimatedSection from "@/components/AnimatedSection";
 import ProjectCard from "@/components/ProjectCard";
 import BlogCard from "@/components/BlogCard";
+import MorphButton from "@/components/MorphButton";
+import IdentityCard from "@/components/IdentityCard";
 import { getFeaturedProjects } from "@/data/projects";
 import { blogPosts } from "@/data/blog-posts";
-import profilePhoto from "@/assets/profile-photo.jpg";
 
 const Index = () => {
   const featured = getFeaturedProjects().slice(0, 4);
@@ -61,33 +62,17 @@ const Index = () => {
                 transition={{ duration: 0.5, delay: 0.4 }}
                 className="flex flex-col sm:flex-row gap-4"
               >
-                <Link
-                  to="/projets"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-lg font-medium gradient-primary text-primary-foreground hover:opacity-90 transition-opacity"
-                >
-                  Voir mes projets <ArrowRight size={18} />
-                </Link>
-                <Link
-                  to="/contact"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-lg font-medium border border-border text-foreground hover:border-primary hover:text-primary transition-colors"
-                >
-                  Me contacter
-                </Link>
+                <MorphButton to="/projets">Voir mes projets</MorphButton>
+                <MorphButton to="/contact">Contact Me</MorphButton>
               </motion.div>
             </div>
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="lg:col-span-2 flex justify-center"
+              className="lg:col-span-2 flex justify-center items-center"
             >
-              <div className="relative group">
-                <img
-                  src={profilePhoto}
-                  alt="Alex Martin - Data Scientist & Fullstack Developer"
-                  className="w-64 h-64 md:w-80 md:h-80 rounded-full object-cover border-gradient glow-blue transition-all duration-300 group-hover:scale-105 group-hover:glow-blue-lg"
-                />
-              </div>
+              <IdentityCard />
             </motion.div>
           </div>
         </div>
@@ -145,12 +130,7 @@ const Index = () => {
             <p className="text-muted-foreground max-w-lg mx-auto mb-8">
               Vous avez un projet en tête ? Discutons de comment je peux vous aider à le concrétiser.
             </p>
-            <Link
-              to="/contact"
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg font-medium gradient-primary text-primary-foreground hover:opacity-90 transition-opacity"
-            >
-              Discutons de votre projet <ArrowRight size={18} />
-            </Link>
+            <MorphButton to="/contact">Discutons de votre projet</MorphButton>
             <div className="flex justify-center gap-6 mt-8">
               <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="GitHub">
                 <Github size={22} />

@@ -30,55 +30,52 @@ const ContactPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-16">
           {/* Form */}
           <AnimatedSection className="lg:col-span-3">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">Nom *</label>
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="neo-field pt-4">
                   <input
                     id="name"
                     type="text"
                     required
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="w-full bg-card border border-border rounded-lg px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none"
-                    placeholder="Votre nom"
+                    className="neo-input"
                   />
+                  <label htmlFor="name" className="neo-label">Nom *</label>
                 </div>
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">Email *</label>
+                <div className="neo-field pt-4">
                   <input
                     id="email"
                     type="email"
                     required
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    className="w-full bg-card border border-border rounded-lg px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none"
-                    placeholder="votre@email.com"
+                    className="neo-input"
                   />
+                  <label htmlFor="email" className="neo-label">Email *</label>
                 </div>
               </div>
-              <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-foreground mb-2">Sujet</label>
+              <div className="neo-field pt-4">
                 <input
                   id="subject"
                   type="text"
+                  required
                   value={form.subject}
                   onChange={(e) => setForm({ ...form, subject: e.target.value })}
-                  className="w-full bg-card border border-border rounded-lg px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none"
-                  placeholder="Sujet du message"
+                  className="neo-input"
                 />
+                <label htmlFor="subject" className="neo-label">Sujet</label>
               </div>
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium text-foreground mb-2">Message *</label>
+              <div className="neo-field pt-4">
                 <textarea
                   id="message"
                   required
                   rows={6}
                   value={form.message}
                   onChange={(e) => setForm({ ...form, message: e.target.value })}
-                  className="w-full bg-card border border-border rounded-lg px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none resize-none"
-                  placeholder="Décrivez votre projet ou posez votre question..."
+                  className="neo-textarea"
                 />
+                <label htmlFor="message" className="neo-label">Message *</label>
               </div>
               <button
                 type="submit"

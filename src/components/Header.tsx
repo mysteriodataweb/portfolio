@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import NavStarLink from "./NavStarLink";
 
 const navLinks = [
   { label: "Projets", href: "/projets" },
@@ -28,9 +29,8 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 glass-header ${
-        scrolled ? "py-3" : "py-5"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 glass-header ${scrolled ? "py-3" : "py-5"
+        }`}
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
         <Link to="/" className="font-heading text-xl font-bold text-foreground hover:text-primary transition-colors">
@@ -38,19 +38,13 @@ const Header = () => {
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden md:flex items-center gap-6">
           {navLinks.map((link) => (
-            <Link
+            <NavStarLink
               key={link.href}
               to={link.href}
-              className={`text-sm font-medium transition-colors link-underline pb-1 ${
-                location.pathname.startsWith(link.href)
-                  ? "text-primary"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {link.label}
-            </Link>
+              label={link.label}
+            />
           ))}
         </nav>
 
@@ -78,11 +72,10 @@ const Header = () => {
                 <Link
                   key={link.href}
                   to={link.href}
-                  className={`text-lg font-medium transition-colors ${
-                    location.pathname.startsWith(link.href)
+                  className={`text-lg font-medium transition-colors ${location.pathname.startsWith(link.href)
                       ? "text-primary"
                       : "text-muted-foreground hover:text-foreground"
-                  }`}
+                    }`}
                 >
                   {link.label}
                 </Link>
