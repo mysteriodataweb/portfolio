@@ -112,9 +112,9 @@ const BlogPostPage = () => {
 
             {/* Author */}
             <div className="mt-10 p-6 bg-card border border-border rounded-xl flex gap-5 items-center">
-              <img src={profilePhoto} alt="Alex Martin" className="w-16 h-16 rounded-full object-cover border-gradient" />
+              <img src={profilePhoto} alt="Alfred Mysteriowebdata" className="w-16 h-16 rounded-full object-cover border-gradient" />
               <div>
-                <p className="font-heading font-semibold text-foreground">Alex Martin</p>
+                <p className="font-heading font-semibold text-foreground">Alfred Mysteriowebdata</p>
                 <p className="text-sm text-muted-foreground">Data Scientist & Fullstack Developer passionné par l'IA et le développement web moderne.</p>
               </div>
             </div>

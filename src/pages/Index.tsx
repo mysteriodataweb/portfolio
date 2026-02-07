@@ -37,7 +37,7 @@ const Index = () => {
                 transition={{ duration: 0.5, delay: 0.1 }}
                 className="text-5xl md:text-7xl font-heading font-bold text-foreground mb-4"
               >
-                Alex Martin
+                Alfred MysterioWebData
               </motion.h1>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}

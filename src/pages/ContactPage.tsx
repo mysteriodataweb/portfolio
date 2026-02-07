@@ -96,14 +96,14 @@ const ContactPage = () => {
               <div>
                 <h3 className="font-heading font-semibold text-foreground mb-4">Contact direct</h3>
                 <div className="space-y-4">
-                  <a href="mailto:contact@alex.dev" className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
-                    <Mail size={18} /> contact@alex.dev
+                  <a href="mailto:fredbiam9@gmail.com" className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
+                    <Mail size={18} /> fredbiam9@gmail.com
                   </a>
-                  <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
-                    <Github size={18} /> github.com/alexmartin
+                  <a href="https://github.com/Mysteriowebdata" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
+                    <Github size={18} /> github.com/Mysteriowebdata
                   </a>
                   <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
-                    <Linkedin size={18} /> linkedin.com/in/alexmartin
+                    <Linkedin size={18} /> linkedin.com/in/AlfredMysteriowebdata
                   </a>
                 </div>
               </div>
@@ -120,7 +120,7 @@ const ContactPage = () => {
               <div>
                 <h3 className="font-heading font-semibold text-foreground mb-4">Localisation</h3>
                 <p className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <MapPin size={16} /> Paris, France · CET (UTC+1)
+                  <MapPin size={16} /> Maroc Casablanca , Bouskoura ville verte
                 </p>
               </div>
             </div>

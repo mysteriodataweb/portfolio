@@ -38,7 +38,7 @@ const AboutPage = () => {
           <AnimatedSection className="lg:col-span-2 flex justify-center" delay={0.2}>
             <img
               src={profilePhoto}
-              alt="Alex Martin"
+              alt="Alfred Mysteriowebdata"
               className="w-full max-w-sm rounded-2xl object-cover border-gradient glow-blue"
             />
           </AnimatedSection>
