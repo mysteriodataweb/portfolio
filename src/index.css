@@ -1,0 +1,199 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222 47% 6%;
+    --foreground: 210 40% 96%;
+
+    --card: 222 47% 9%;
+    --card-foreground: 210 40% 96%;
+
+    --popover: 222 47% 9%;
+    --popover-foreground: 210 40% 96%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 215 28% 17%;
+    --secondary-foreground: 210 40% 96%;
+
+    --muted: 215 28% 17%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 187 92% 41%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 215 28% 17%;
+    --input: 215 28% 17%;
+    --ring: 217 91% 60%;
+
+    --radius: 0.75rem;
+
+    /* Custom portfolio tokens */
+    --bg-primary: 222 47% 6%;
+    --bg-secondary: 222 47% 9%;
+    --bg-tertiary: 215 28% 17%;
+
+    --text-primary: 210 40% 96%;
+    --text-secondary: 215 20% 65%;
+    --text-muted: 215 16% 47%;
+
+    --accent-blue: 217 91% 60%;
+    --accent-cyan: 187 92% 41%;
+    --accent-purple: 258 90% 66%;
+
+    --success: 160 84% 39%;
+    --warning: 38 92% 50%;
+
+    --border-color: 215 28% 17%;
+    --border-accent: 215 19% 27%;
+
+    --sidebar-background: 222 47% 6%;
+    --sidebar-foreground: 215 20% 65%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 215 28% 17%;
+    --sidebar-accent-foreground: 210 40% 96%;
+    --sidebar-border: 215 28% 17%;
+    --sidebar-ring: 217 91% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading tracking-tight;
+  }
+}
+
+@layer utilities {
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(222 62% 33%) 0%, hsl(217 91% 60%) 100%);
+  }
+
+  .gradient-accent {
+    background: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(258 90% 66%) 100%);
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(187 92% 41%) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glow-blue {
+    box-shadow: 0 8px 32px hsla(217, 91%, 60%, 0.2);
+  }
+
+  .glow-blue-lg {
+    box-shadow: 0 12px 48px hsla(217, 91%, 60%, 0.3);
+  }
+
+  .border-gradient {
+    border: 3px solid transparent;
+    background: linear-gradient(hsl(222 47% 9%), hsl(222 47% 9%)) padding-box,
+                linear-gradient(135deg, hsl(217 91% 60%), hsl(258 90% 66%)) border-box;
+  }
+
+  .glass-header {
+    background: hsla(222, 47%, 6%, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid hsla(215, 28%, 17%, 0.5);
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-4px);
+    border-color: hsl(217 91% 60%);
+    box-shadow: 0 8px 32px hsla(217, 91%, 60%, 0.15);
+  }
+
+  .link-underline {
+    @apply relative;
+  }
+
+  .link-underline::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-[2px] bg-primary transition-all duration-300;
+  }
+
+  .link-underline:hover::after {
+    @apply w-full;
+  }
+
+  .scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    z-index: 100;
+    background: linear-gradient(90deg, hsl(217 91% 60%), hsl(258 90% 66%));
+  }
+}
+
+/* Code blocks styling */
+pre code {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+code {
+  font-family: 'JetBrains Mono', monospace;
+  @apply bg-secondary px-1.5 py-0.5 rounded text-sm;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(222 47% 6%);
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(215 28% 17%);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(215 19% 27%);
+}
+
+/* Focus visible */
+:focus-visible {
+  outline: 2px solid hsl(217 91% 60%);
+  outline-offset: 2px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
