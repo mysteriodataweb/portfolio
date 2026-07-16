@@ -1,0 +1,73 @@
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { api } from "@/api/client";
+
+export interface Project {
+  id: string;
+  slug: string;
+  title: string;
+  category: "data-science" | "fullstack" | "hybrid";
+  shortDescription: string;
+  fullDescription: string;
+  image: string;
+  techStack: string[];
+  demoUrl?: string;
+  githubUrl?: string;
+  date: string;
+  featured: boolean;
+  published: boolean;
+  archived: boolean;
+  archivedAt: string | null;
+  context: string;
+  approach: string;
+  results: string;
+  challenges: string;
+}
+
+export function useProjects(category?: string) {
+  return useQuery({
+    queryKey: ["projects", category],
+    queryFn: () => api.get<Project[]>(`/projects${category && category !== "all" ? `?category=${category}` : ""}`),
+  });
+}
+
+export function useFeaturedProjects() {
+  return useQuery({
+    queryKey: ["projects", "featured"],
+    queryFn: () => api.get<Project[]>("/projects/featured"),
+  });
+}
+
+export function useProject(slug: string) {
+  return useQuery({
+    queryKey: ["projects", slug],
+    queryFn: () => api.get<Project>(`/projects/${slug}`),
+    enabled: !!slug,
+  });
+}
+
+export function useAllProjects() {
+  return useQuery({
+    queryKey: ["projects"],
+    queryFn: () => api.get<Project[]>("/projects"),
+  });
+}
+
+export function useArchiveProject() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.patch(`/admin/projects/${id}/archive`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+    },
+  });
+}
+
+export function useUnarchiveProject() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.patch(`/admin/projects/${id}/unarchive`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+    },
+  });
+}

@@ -6,20 +6,20 @@ import ProjectCard from "@/components/ProjectCard";
 import BlogCard from "@/components/BlogCard";
 import MorphButton from "@/components/MorphButton";
 import IdentityCard from "@/components/IdentityCard";
-import { getFeaturedProjects } from "@/data/projects";
-import { blogPosts } from "@/data/blog-posts";
+import { useFeaturedProjects } from "@/hooks/use-projects";
+import { useBlogPosts } from "@/hooks/use-blog";
 
 const Index = () => {
-  const featured = getFeaturedProjects().slice(0, 4);
-  const latestPosts = blogPosts.slice(0, 3);
+  const { data: featured = [] } = useFeaturedProjects();
+  const { data: allPosts = [] } = useBlogPosts();
+  const featuredSliced = featured.slice(0, 4);
+  const latestPosts = allPosts.slice(0, 3);
 
   return (
     <>
       {/* Hero */}
-      <section className="min-h-[90vh] flex items-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-background to-card" />
-        {/* Subtle grid pattern */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, hsl(var(--foreground)) 1px, transparent 0)", backgroundSize: "40px 40px" }} />
+      <section className="min-h-[90vh] flex items-center relative overflow-hidden bg-background">
+        <div className="absolute inset-0 opacity-[0.02]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, #171717 1px, transparent 0)", backgroundSize: "40px 40px" }} />
 
         <div className="container mx-auto px-6 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-center">
@@ -28,7 +28,7 @@ const Index = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="text-primary font-medium mb-4"
+                className="text-[#6B6B6B] font-medium mb-4"
               >
                 Bonjour, je suis
               </motion.p>
@@ -36,25 +36,25 @@ const Index = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
-                className="text-5xl md:text-7xl font-heading font-bold text-foreground mb-4"
+                className="text-5xl md:text-7xl font-heading font-bold text-foreground mb-4 leading-tight"
               >
-                Alfred MysterioWebData
+                Alfred <span className="text-accent">Mysterio</span>WebData
               </motion.h1>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="text-xl md:text-2xl font-heading font-medium gradient-text mb-6"
+                className="text-xl md:text-2xl font-heading font-medium text-foreground mb-6"
               >
-                Data Scientist & Fullstack Developer
+                Data Scientist & <span className="text-accent">Fullstack Developer</span>
               </motion.p>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
-                className="text-lg text-muted-foreground max-w-lg mb-8 leading-relaxed"
+                className="text-lg text-[#6B6B6B] max-w-lg mb-10 leading-relaxed"
               >
-                Je transforme les données en insights actionnables et les idées en applications web performantes. Passionné par l'IA et le développement moderne.
+                Je transforme les donnees en insights actionnables et les idees en applications web performantes. Passionne par l'IA et le developpement moderne.
               </motion.p>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -63,7 +63,9 @@ const Index = () => {
                 className="flex flex-col sm:flex-row gap-4"
               >
                 <MorphButton to="/projets">Voir mes projets</MorphButton>
-                <MorphButton to="/contact">Contact Me</MorphButton>
+                <Link to="/contact" className="pill-btn-outline">
+                  Contact Me
+                </Link>
               </motion.div>
             </div>
             <motion.div
@@ -78,22 +80,49 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Stats Band */}
+      <div className="stats-band">
+        <div className="container mx-auto px-6">
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
+            <div className="text-center">
+              <p className="text-3xl font-bold text-white">5<span className="text-accent">+</span></p>
+              <p className="text-xs text-white/60 mt-1 uppercase tracking-wider">Annees d'experience</p>
+            </div>
+            <div className="w-px h-10 bg-white/20 hidden md:block" />
+            <div className="text-center">
+              <p className="text-3xl font-bold text-white">30<span className="text-accent">+</span></p>
+              <p className="text-xs text-white/60 mt-1 uppercase tracking-wider">Projets realises</p>
+            </div>
+            <div className="w-px h-10 bg-white/20 hidden md:block" />
+            <div className="text-center">
+              <p className="text-3xl font-bold text-white">15<span className="text-accent">+</span></p>
+              <p className="text-xs text-white/60 mt-1 uppercase tracking-wider">Clients satisfaits</p>
+            </div>
+            <div className="w-px h-10 bg-white/20 hidden md:block" />
+            <div className="text-center">
+              <p className="text-3xl font-bold text-white">10<span className="text-accent">+</span></p>
+              <p className="text-xs text-white/60 mt-1 uppercase tracking-wider">Articles publies</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Featured Projects */}
-      <section className="py-24">
+      <section className="py-24 bg-background">
         <div className="container mx-auto px-6">
           <AnimatedSection>
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-2">Projets sélectionnés</h2>
-            <p className="text-muted-foreground mb-12">Une sélection de mes travaux les plus récents.</p>
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-2">Projets <span className="text-accent">selectionnes</span></h2>
+            <p className="text-[#6B6B6B] mb-12">Une selection de mes travaux les plus recents.</p>
           </AnimatedSection>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {featured.map((project, i) => (
+            {featuredSliced.map((project, i) => (
               <AnimatedSection key={project.id} delay={i * 0.1}>
                 <ProjectCard project={project} />
               </AnimatedSection>
             ))}
           </div>
           <AnimatedSection className="mt-12 text-center">
-            <Link to="/projets" className="inline-flex items-center gap-2 text-primary font-medium hover:gap-3 transition-all">
+            <Link to="/projets" className="link-arrow">
               Voir tous les projets <ArrowRight size={16} />
             </Link>
           </AnimatedSection>
@@ -101,11 +130,11 @@ const Index = () => {
       </section>
 
       {/* Blog */}
-      <section className="py-24 bg-card">
+      <section className="py-24 bg-card border-y border-border">
         <div className="container mx-auto px-6">
           <AnimatedSection>
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-2">Du blog</h2>
-            <p className="text-muted-foreground mb-12">Réflexions et tutoriels sur la data science et le développement.</p>
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-2">Du <span className="text-accent">blog</span></h2>
+            <p className="text-[#6B6B6B] mb-12">Reflexions et tutoriels sur la data science et le developpement.</p>
           </AnimatedSection>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {latestPosts.map((post, i) => (
@@ -115,7 +144,7 @@ const Index = () => {
             ))}
           </div>
           <AnimatedSection className="mt-12 text-center">
-            <Link to="/blog" className="inline-flex items-center gap-2 text-primary font-medium hover:gap-3 transition-all">
+            <Link to="/blog" className="link-arrow">
               Voir tous les articles <ArrowRight size={16} />
             </Link>
           </AnimatedSection>
@@ -123,22 +152,24 @@ const Index = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-24">
+      <section className="section-dark">
         <div className="container mx-auto px-6 text-center">
           <AnimatedSection>
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-4">Travaillons ensemble</h2>
-            <p className="text-muted-foreground max-w-lg mx-auto mb-8">
-              Vous avez un projet en tête ? Discutons de comment je peux vous aider à le concrétiser.
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-4">Travaillons <span className="text-accent">ensemble</span></h2>
+            <p className="text-white/60 max-w-lg mx-auto mb-10">
+              Vous avez un projet en tete ? Discutons de comment je peux vous aider a le concretiser.
             </p>
-            <MorphButton to="/contact">Discutons de votre projet</MorphButton>
-            <div className="flex justify-center gap-6 mt-8">
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="GitHub">
+            <Link to="/contact" className="pill-btn" style={{ background: "#E07B39" }}>
+              Discutons de votre projet
+            </Link>
+            <div className="flex justify-center gap-6 mt-10">
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-white/50 hover:text-white transition-colors" aria-label="GitHub">
                 <Github size={22} />
               </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="LinkedIn">
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-white/50 hover:text-white transition-colors" aria-label="LinkedIn">
                 <Linkedin size={22} />
               </a>
-              <a href="mailto:contact@alex.dev" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Email">
+              <a href="mailto:contact@alex.dev" className="text-white/50 hover:text-white transition-colors" aria-label="Email">
                 <Mail size={22} />
               </a>
             </div>

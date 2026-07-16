@@ -1,0 +1,33 @@
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/api/client";
+
+export interface Skill {
+  name: string;
+  level: number;
+  icon?: string;
+}
+
+export interface SkillCategory {
+  name: string;
+  icon: string;
+  color: string;
+  skills: Skill[];
+}
+
+export interface Certification {
+  name: string;
+  org: string;
+  year: string;
+}
+
+interface SkillsData {
+  skillCategories: SkillCategory[];
+  certifications: Certification[];
+}
+
+export function useSkills() {
+  return useQuery({
+    queryKey: ["skills"],
+    queryFn: () => api.get<SkillsData>("/skills"),
+  });
+}

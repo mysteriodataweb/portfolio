@@ -2,27 +2,31 @@ import { useState } from "react";
 import { Github, Linkedin, Mail, MapPin, Send } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
 import { toast } from "sonner";
+import { useContact } from "@/hooks/use-contact";
 
 const ContactPage = () => {
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
-  const [sending, setSending] = useState(false);
+  const contactMutation = useContact();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSending(true);
-    setTimeout(() => {
-      setSending(false);
-      toast.success("Message envoyé avec succès ! Je vous répondrai rapidement.");
-      setForm({ name: "", email: "", subject: "", message: "" });
-    }, 1000);
+    contactMutation.mutate(form, {
+      onSuccess: () => {
+        toast.success("Message envoyé avec succès ! Je vous répondrai rapidement.");
+        setForm({ name: "", email: "", subject: "", message: "" });
+      },
+      onError: (error) => {
+        toast.error(error.message || "Erreur lors de l'envoi du message.");
+      },
+    });
   };
 
   return (
     <section className="py-16">
       <div className="container mx-auto px-6">
         <AnimatedSection>
-          <h1 className="text-4xl md:text-5xl font-heading font-bold text-foreground mb-4">Travaillons ensemble</h1>
-          <p className="text-lg text-muted-foreground mb-16 max-w-2xl">
+          <h1 className="text-4xl md:text-5xl font-heading font-bold text-foreground mb-4">Travaillons <span className="text-accent">ensemble</span></h1>
+          <p className="text-lg text-[#6B6B6B] mb-16 max-w-2xl">
             Vous avez un projet ? Une question ? Discutons-en.
           </p>
         </AnimatedSection>
@@ -79,10 +83,10 @@ const ContactPage = () => {
               </div>
               <button
                 type="submit"
-                disabled={sending}
-                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg font-medium gradient-primary text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-50"
+                disabled={contactMutation.isPending}
+                className="pill-btn disabled:opacity-50"
               >
-                {sending ? "Envoi en cours..." : "Envoyer le message"} <Send size={16} />
+                {contactMutation.isPending ? "Envoi en cours..." : "Envoyer le message"} <Send size={16} className="ml-2" />
               </button>
             </form>
           </AnimatedSection>
@@ -93,31 +97,31 @@ const ContactPage = () => {
               <div>
                 <h3 className="font-heading font-semibold text-foreground mb-4">Contact direct</h3>
                 <div className="space-y-4">
-                  <a href="mailto:fredbiam9@gmail.com" className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
+                  <a href="mailto:fredbiam9@gmail.com" className="flex items-center gap-3 text-[#6B6B6B] hover:text-foreground transition-colors">
                     <Mail size={18} /> fredbiam9@gmail.com
                   </a>
-                  <a href="https://github.com/Mysteriowebdata" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
+                  <a href="https://github.com/Mysteriowebdata" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[#6B6B6B] hover:text-foreground transition-colors">
                     <Github size={18} /> github.com/Mysteriowebdata
                   </a>
-                  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
+                  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[#6B6B6B] hover:text-foreground transition-colors">
                     <Linkedin size={18} /> linkedin.com/in/AlfredMysteriowebdata
                   </a>
                 </div>
               </div>
 
               <div>
-                <h3 className="font-heading font-semibold text-foreground mb-4">Disponibilité</h3>
+                <h3 className="font-heading font-semibold text-foreground mb-4">Disponibilite</h3>
                 <div className="flex items-center gap-2 mb-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
                   <span className="text-sm text-foreground">Disponible pour de nouveaux projets</span>
                 </div>
-                <p className="text-sm text-muted-foreground">Réponse sous 24-48h en moyenne.</p>
+                <p className="text-sm text-[#6B6B6B]">Reponse sous 24-48h en moyenne.</p>
               </div>
 
               <div>
                 <h3 className="font-heading font-semibold text-foreground mb-4">Localisation</h3>
-                <p className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <MapPin size={16} /> Maroc Casablanca , Bouskoura ville verte
+                <p className="flex items-center gap-2 text-sm text-[#6B6B6B]">
+                  <MapPin size={16} /> Maroc Casablanca, Bouskoura ville verte
                 </p>
               </div>
             </div>

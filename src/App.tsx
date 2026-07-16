@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AdminProvider } from "@/contexts/AdminContext";
 import Layout from "@/components/Layout";
 import Index from "./pages/Index";
 import ProjectsPage from "./pages/ProjectsPage";
@@ -12,31 +13,38 @@ import BlogPostPage from "./pages/BlogPostPage";
 import SkillsPage from "./pages/SkillsPage";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
+import NotificationsPage from "./pages/NotificationsPage";
 import NotFound from "./pages/NotFound";
+import PublicCVPage from "./pages/PublicCVPage";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Layout>
+      <AdminProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/projets" element={<ProjectsPage />} />
-            <Route path="/projets/:category" element={<ProjectsPage />} />
-            <Route path="/projet/:slug" element={<ProjectDetailPage />} />
-            <Route path="/blog" element={<BlogPage />} />
-            <Route path="/blog/:slug" element={<BlogPostPage />} />
-            <Route path="/competences" element={<SkillsPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="*" element={<NotFound />} />
+            {/* Public routes */}
+            <Route element={<Layout><Index /></Layout>} path="/" />
+            <Route element={<Layout><ProjectsPage /></Layout>} path="/projets" />
+            <Route element={<Layout><ProjectsPage /></Layout>} path="/projets/:category" />
+            <Route element={<Layout><ProjectDetailPage /></Layout>} path="/projet/:slug" />
+            <Route element={<Layout><BlogPage /></Layout>} path="/blog" />
+            <Route element={<Layout><BlogPostPage /></Layout>} path="/blog/:slug" />
+            <Route element={<Layout><SkillsPage /></Layout>} path="/competences" />
+            <Route element={<Layout><AboutPage /></Layout>} path="/about" />
+            <Route element={<Layout><ContactPage /></Layout>} path="/contact" />
+            <Route element={<Layout><PublicCVPage /></Layout>} path="/cv" />
+            <Route element={<Layout><NotificationsPage /></Layout>} path="/notifications" />
+
+            {/* 404 */}
+            <Route path="*" element={<Layout><NotFound /></Layout>} />
           </Routes>
-        </Layout>
-      </BrowserRouter>
+        </BrowserRouter>
+      </AdminProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
