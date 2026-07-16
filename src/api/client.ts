@@ -1,4 +1,4 @@
-const API_BASE = "/api";
+const API_BASE = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : "/api";
 
 function getAuthHeaders(): HeadersInit {
   const token = localStorage.getItem("admin_token");
@@ -16,7 +16,6 @@ async function fetchApi<T>(endpoint: string, options?: RequestInit): Promise<T> 
 
   if (res.status === 401 || res.status === 403) {
     localStorage.removeItem("admin_token");
-    window.location.href = "/admin/login";
     throw new Error("Session expirée");
   }
 
