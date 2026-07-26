@@ -2,6 +2,10 @@ import { useCVData } from "@/hooks/use-admin-cv";
 import { Download, ExternalLink } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
 
+const API_BASE = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL}/api`
+  : "/api";
+
 export default function PublicCVPage() {
   const { data: cv, isLoading } = useCVData();
 
@@ -23,11 +27,11 @@ export default function PublicCVPage() {
               <p className="text-[#6B6B6B]">Telechargez mon CV en PDF ou consultez la version HTML.</p>
             </div>
             <div className="flex gap-3">
-              <a href="/api/cv/html" target="_blank" rel="noopener noreferrer" className="pill-btn-outline text-sm">
+              <a href={`${API_BASE}/cv/html`} target="_blank" rel="noopener noreferrer" className="pill-btn-outline text-sm">
                 <ExternalLink className="h-4 w-4 mr-2" />
                 Voir HTML
               </a>
-              <a href="/api/cv/pdf" download className="pill-btn text-sm">
+              <a href={`${API_BASE}/cv/pdf`} download className="pill-btn text-sm">
                 <Download className="h-4 w-4 mr-2" />
                 Telecharger PDF
               </a>

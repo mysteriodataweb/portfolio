@@ -1,5 +1,9 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
+const API_BASE = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL}/api`
+  : "/api";
+
 interface AdminContextType {
   isAdmin: boolean;
   isLoading: boolean;
@@ -21,7 +25,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const token = localStorage.getItem("admin_token");
     if (token) {
-      fetch("/api/auth/me", { headers: { Authorization: `Bearer ${token}` } })
+      fetch(`${API_BASE}/auth/me`, { headers: { Authorization: `Bearer ${token}` } })
         .then((res) => { if (res.ok) setIsAdmin(true); else localStorage.removeItem("admin_token"); })
         .catch(() => localStorage.removeItem("admin_token"))
         .finally(() => setIsLoading(false));
@@ -31,7 +35,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (username: string, password: string) => {
-    const res = await fetch("/api/auth/login", {
+    const res = await fetch(`${API_BASE}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
