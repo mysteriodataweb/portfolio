@@ -21,7 +21,7 @@ const filters = [
 const emptyProject = {
   title: "", slug: "", category: "fullstack", shortDescription: "", fullDescription: "",
   image: "/placeholder.svg", techStack: "", demoUrl: "", githubUrl: "", date: new Date().toISOString().split("T")[0],
-  featured: false, context: "", approach: "", results: "", challenges: "",
+  featured: false, published: true, context: "", approach: "", results: "", challenges: "",
 };
 
 const ProjectsPage = () => {

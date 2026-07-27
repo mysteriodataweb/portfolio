@@ -39,19 +39,34 @@ const ProjectDetailPage = () => {
   const startEdit = () => {
     setForm({
       title: project.title,
-      context: project.context,
-      approach: project.approach,
-      results: project.results,
-      challenges: project.challenges,
+      slug: project.slug,
+      category: project.category,
       shortDescription: project.shortDescription,
       fullDescription: project.fullDescription,
+      image: project.image,
+      techStack: (project.techStack || []).join(", "),
+      demoUrl: project.demoUrl || "",
+      githubUrl: project.githubUrl || "",
+      date: project.date || "",
+      featured: project.featured || false,
+      published: project.published !== false,
+      context: project.context || "",
+      approach: project.approach || "",
+      results: project.results || "",
+      challenges: project.challenges || "",
     });
     setEditing(true);
   };
 
   const saveEdit = async () => {
     try {
-      await api.put(`/admin/projects/${project.id}`, form);
+      const payload = {
+        ...form,
+        techStack: typeof form.techStack === "string"
+          ? form.techStack.split(",").map((s: string) => s.trim()).filter(Boolean)
+          : form.techStack,
+      };
+      await api.put(`/admin/projects/${project.id}`, payload);
       toast.success("Projet mis à jour !");
       setEditing(false);
       window.location.reload();
