@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { ArrowRight, Link, Zap } from "lucide-react";
+import { ArrowRight, Link, Zap, BarChart3 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,6 +16,7 @@ interface TimelineItem {
   relatedIds: number[];
   status: "completed" | "in-progress" | "pending";
   energy: number;
+  skills?: { name: string; level: number }[];
 }
 
 interface RadialOrbitalTimelineProps {
@@ -282,8 +283,39 @@ export default function RadialOrbitalTimeline({
                         {item.title}
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="text-xs text-white/80">
+                    <CardContent className="text-xs text-white/80 max-h-[260px] overflow-y-auto">
                       <p>{item.content}</p>
+
+                      {item.skills && item.skills.length > 0 && (
+                        <div className="mt-4 pt-3 border-t border-white/10">
+                          <div className="flex items-center mb-2">
+                            <BarChart3 size={10} className="text-white/70 mr-1" />
+                            <h4 className="text-xs uppercase tracking-wider font-medium text-white/70">
+                              Niveau
+                            </h4>
+                          </div>
+                          <div className="space-y-2">
+                            {item.skills.map((skill) => (
+                              <div key={skill.name}>
+                                <div className="flex justify-between items-center mb-0.5 gap-2">
+                                  <span className="text-[11px] text-white/80">
+                                    {skill.name}
+                                  </span>
+                                  <span className="font-mono text-[11px] text-white/50 shrink-0">
+                                    {skill.level}%
+                                  </span>
+                                </div>
+                                <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                                  <div
+                                    className="h-full bg-gradient-to-r from-accent to-purple-500"
+                                    style={{ width: `${skill.level}%` }}
+                                  ></div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
 
                       <div className="mt-4 pt-3 border-t border-white/10">
                         <div className="flex justify-between items-center text-xs mb-1">
