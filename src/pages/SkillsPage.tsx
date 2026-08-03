@@ -11,12 +11,13 @@ import {
   Pencil,
   Plus,
   Trash2,
-  Orbit,
   ArrowRight,
 } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
-import { IconCloud } from "@/components/ui/interactive-icon-cloud";
+import ImageUpload from "@/components/ImageUpload";
 import { useSkills } from "@/hooks/use-skills";
+import { useTools } from "@/hooks/use-tools";
+import CollectionSurfer from "@/components/ui/collection-surfer";
 import { useAdmin } from "@/contexts/AdminContext";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -24,43 +25,6 @@ import { api } from "@/api/client";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import RadialOrbitalTimeline from "@/components/ui/radial-orbital-timeline";
-
-const toolSlugs = [
-  "typescript",
-  "javascript",
-  "python",
-  "rust",
-  "java",
-  "react",
-  "nextdotjs",
-  "tailwindcss",
-  "vuejs",
-  "d3dotjs",
-  "nodedotjs",
-  "express",
-  "fastapi",
-  "postgresql",
-  "redis",
-  "mongodb",
-  "docker",
-  "kubernetes",
-  "nginx",
-  "amazonaws",
-  "vercel",
-  "github",
-  "git",
-  "gitlab",
-  "linux",
-  "openai",
-  "pytorch",
-  "tensorflow",
-  "scikitlearn",
-  "pandas",
-  "numpy",
-  "huggingface",
-  "jupyter",
-  "langchain",
-];
 
 const FALLBACK_LEVELS: Record<string, number> = {
   React: 92,
@@ -223,12 +187,18 @@ const expertiseDomains = [
 
 const SkillsPage = () => {
   const { data, isLoading, refetch } = useSkills();
+  const { data: tools = [], refetch: refetchTools } = useTools();
   const { isAdmin } = useAdmin();
 
   // Certification dialog
   const [showCertDialog, setShowCertDialog] = useState(false);
   const [editingCert, setEditingCert] = useState<any>(null);
   const [certForm, setCertForm] = useState({ name: "", org: "", year: new Date().getFullYear() });
+
+  // Tool dialog
+  const [showToolDialog, setShowToolDialog] = useState(false);
+  const [editingTool, setEditingTool] = useState<any>(null);
+  const [toolForm, setToolForm] = useState({ name: "", image: "" });
 
   const skillCategories = data?.skillCategories || [];
   const certifications = data?.certifications || [];
@@ -268,6 +238,41 @@ const SkillsPage = () => {
     } catch (err: any) { toast.error(err.message || "Erreur"); }
   };
 
+  const openAddTool = () => {
+    setEditingTool(null);
+    setToolForm({ name: "", image: "" });
+    setShowToolDialog(true);
+  };
+
+  const openEditTool = (tool: any) => {
+    setEditingTool(tool);
+    setToolForm({ name: tool.name, image: tool.image || "" });
+    setShowToolDialog(true);
+  };
+
+  const saveTool = async () => {
+    try {
+      if (editingTool) {
+        await api.put(`/admin/tools/${editingTool.id}`, toolForm);
+        toast.success("Outil mis à jour !");
+      } else {
+        await api.post("/admin/tools", toolForm);
+        toast.success("Outil ajouté !");
+      }
+      setShowToolDialog(false);
+      refetchTools();
+    } catch (err: any) { toast.error(err.message || "Erreur"); }
+  };
+
+  const deleteTool = async (tool: any) => {
+    if (!confirm(`Supprimer "${tool.name}" ?`)) return;
+    try {
+      await api.delete(`/admin/tools/${tool.id}`);
+      toast.success("Outil supprimé !");
+      refetchTools();
+    } catch (err: any) { toast.error(err.message || "Erreur"); }
+  };
+
   if (isLoading) {
     return <div className="py-32 text-center"><p className="text-[#6B6B6B]">Chargement...</p></div>;
   }
@@ -297,35 +302,18 @@ const SkillsPage = () => {
           </div>
         </AnimatedSection>
 
-        {/* Tech universe */}
+        {/* Compétences */}
         <AnimatedSection>
           <div className="mb-20">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="p-3 rounded-2xl bg-accent/10 text-accent"><Orbit size={24} /></div>
-              <div>
-                <h2 className="text-2xl md:text-3xl font-heading font-bold text-foreground">Mon Univers Technique</h2>
-                <p className="text-[#6B6B6B] mt-1">Une constellation d'outils manipules au quotidien, du web au machine learning.</p>
-              </div>
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-2xl md:text-3xl font-heading font-bold text-foreground">Competences</h2>
             </div>
-            <div className="relative flex size-full max-w-4xl mx-auto items-center justify-center overflow-hidden rounded-3xl border bg-white px-8 pb-12 pt-4">
-              <IconCloud iconSlugs={toolSlugs} />
+            <p className="text-[#6B6B6B] mb-8 max-w-2xl">
+              Cliquez sur un domaine pour voir le niveau de chaque competence. Les liaisons montrent les connexions entre expertises.
+            </p>
+            <div className="relative overflow-hidden rounded-3xl border bg-white px-4 py-14 md:px-8">
+              <RadialOrbitalTimeline timelineData={expertiseTimeline} className="h-[520px] sm:h-[600px]" dark={false} />
             </div>
-          </div>
-        </AnimatedSection>
-
-        {/* Orbital expertise */}
-        <AnimatedSection>
-          <div className="relative overflow-hidden rounded-3xl bg-[#171717] text-white px-4 py-14 md:px-8 mb-20">
-            <div className="text-center max-w-2xl mx-auto mb-4">
-              <span className="inline-block px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-widest bg-white/10 text-white/80 border border-white/15 mb-5">
-                Parcours d'expertise
-              </span>
-              <h2 className="text-2xl md:text-3xl font-heading font-bold mb-3">Un profil <span className="bg-gradient-to-r from-accent via-sky-400 to-teal-400 bg-clip-text text-transparent">full stack, data & IA</span></h2>
-              <p className="text-white/60 text-sm md:text-base">
-                Cliquez sur un domaine pour voir le niveau de chaque competence. Les liaisons montrent les connexions entre expertises.
-              </p>
-            </div>
-            <RadialOrbitalTimeline timelineData={expertiseTimeline} className="h-[520px] sm:h-[600px]" />
           </div>
         </AnimatedSection>
 
@@ -358,6 +346,21 @@ const SkillsPage = () => {
           </div>
         </AnimatedSection>
 
+        {/* Outils */}
+        <AnimatedSection>
+          <div className="mb-20">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-2xl md:text-3xl font-heading font-bold text-foreground">Outils</h2>
+              {isAdmin && (
+                <button onClick={openAddTool} className="pill-btn-outline text-sm">
+                  <Plus className="h-4 w-4 mr-2" /> Ajouter
+                </button>
+              )}
+            </div>
+            <CollectionSurfer tools={tools} isAdmin={isAdmin} onEdit={openEditTool} onDelete={deleteTool} />
+          </div>
+        </AnimatedSection>
+
         <AnimatedSection className="text-center">
           <Link to="/projets" className="link-arrow">
             Voir mes projets utilisant ces technologies <ArrowRight size={16} />
@@ -377,6 +380,21 @@ const SkillsPage = () => {
           <DialogFooter>
             <button onClick={() => setShowCertDialog(false)} className="pill-btn-outline text-sm">Annuler</button>
             <button onClick={saveCert} disabled={!certForm.name} className="pill-btn text-sm">{editingCert ? "Mettre a jour" : "Ajouter"}</button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Tool Dialog */}
+      <Dialog open={showToolDialog} onOpenChange={setShowToolDialog}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>{editingTool ? "Modifier" : "Ajouter"} un outil</DialogTitle></DialogHeader>
+          <div className="space-y-4 py-4">
+            <div><label className="text-sm font-medium">Nom *</label><Input value={toolForm.name} onChange={(e) => setToolForm({ ...toolForm, name: e.target.value })} className="rounded-full" /></div>
+            <div><label className="text-sm font-medium">Image (logo)</label><ImageUpload value={toolForm.image} onChange={(url) => setToolForm({ ...toolForm, image: url })} /></div>
+          </div>
+          <DialogFooter>
+            <button onClick={() => setShowToolDialog(false)} className="pill-btn-outline text-sm">Annuler</button>
+            <button onClick={saveTool} disabled={!toolForm.name} className="pill-btn text-sm">{editingTool ? "Mettre a jour" : "Ajouter"}</button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
