@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Github, Linkedin, Mail } from "lucide-react";
+import { ArrowRight, Github, Linkedin, Mail, Pencil } from "lucide-react";
 import { motion } from "framer-motion";
 import AnimatedSection from "@/components/AnimatedSection";
 import ProjectCard from "@/components/ProjectCard";
@@ -8,12 +9,47 @@ import MorphButton from "@/components/MorphButton";
 import IdentityCard from "@/components/IdentityCard";
 import { useFeaturedProjects } from "@/hooks/use-projects";
 import { useBlogPosts } from "@/hooks/use-blog";
+import { useStats } from "@/hooks/use-stats";
+import { useAdmin } from "@/contexts/AdminContext";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { api } from "@/api/client";
+import { toast } from "sonner";
 
 const Index = () => {
   const { data: featured = [] } = useFeaturedProjects();
   const { data: allPosts = [] } = useBlogPosts();
+  const { data: stats, refetch: refetchStats } = useStats();
+  const { isAdmin } = useAdmin();
   const featuredSliced = featured.slice(0, 4);
   const latestPosts = allPosts.slice(0, 3);
+
+  const [showStatsDialog, setShowStatsDialog] = useState(false);
+  const [statsForm, setStatsForm] = useState({ yearsExperience: 5, clientsCount: 15 });
+
+  const openEditStats = () => {
+    setStatsForm({
+      yearsExperience: stats?.yearsExperience ?? 5,
+      clientsCount: stats?.clientsCount ?? 15,
+    });
+    setShowStatsDialog(true);
+  };
+
+  const saveStats = async () => {
+    try {
+      await api.put("/admin/stats", statsForm);
+      toast.success("Statistiques mises à jour !");
+      setShowStatsDialog(false);
+      refetchStats();
+    } catch (err: any) {
+      toast.error(err.message || "Erreur");
+    }
+  };
+
+  const years = stats?.yearsExperience ?? 5;
+  const clients = stats?.clientsCount ?? 15;
+  const projectsCount = stats?.projectsCount ?? 0;
+  const articlesCount = stats?.articlesCount ?? 0;
 
   return (
     <>
@@ -81,26 +117,35 @@ const Index = () => {
       </section>
 
       {/* Stats Band */}
-      <div className="stats-band">
+      <div className="stats-band relative">
+        {isAdmin && (
+          <button
+            onClick={openEditStats}
+            className="absolute top-4 right-4 z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-white/70 bg-white/10 hover:bg-white/20 hover:text-white transition-colors"
+            title="Modifier les statistiques"
+          >
+            <Pencil size={12} /> Modifier
+          </button>
+        )}
         <div className="container mx-auto px-6">
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
             <div className="text-center">
-              <p className="text-3xl font-bold text-white">5<span className="text-accent">+</span></p>
+              <p className="text-3xl font-bold text-white">{years}<span className="text-accent">+</span></p>
               <p className="text-xs text-white/60 mt-1 uppercase tracking-wider">Annees d'experience</p>
             </div>
             <div className="w-px h-10 bg-white/20 hidden md:block" />
             <div className="text-center">
-              <p className="text-3xl font-bold text-white">30<span className="text-accent">+</span></p>
+              <p className="text-3xl font-bold text-white">{projectsCount}<span className="text-accent">+</span></p>
               <p className="text-xs text-white/60 mt-1 uppercase tracking-wider">Projets realises</p>
             </div>
             <div className="w-px h-10 bg-white/20 hidden md:block" />
             <div className="text-center">
-              <p className="text-3xl font-bold text-white">15<span className="text-accent">+</span></p>
+              <p className="text-3xl font-bold text-white">{clients}<span className="text-accent">+</span></p>
               <p className="text-xs text-white/60 mt-1 uppercase tracking-wider">Clients satisfaits</p>
             </div>
             <div className="w-px h-10 bg-white/20 hidden md:block" />
             <div className="text-center">
-              <p className="text-3xl font-bold text-white">10<span className="text-accent">+</span></p>
+              <p className="text-3xl font-bold text-white">{articlesCount}<span className="text-accent">+</span></p>
               <p className="text-xs text-white/60 mt-1 uppercase tracking-wider">Articles publies</p>
             </div>
           </div>
@@ -176,6 +221,24 @@ const Index = () => {
           </AnimatedSection>
         </div>
       </section>
+
+      {/* Stats Dialog */}
+      <Dialog open={showStatsDialog} onOpenChange={setShowStatsDialog}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Modifier les statistiques</DialogTitle></DialogHeader>
+          <div className="space-y-4 py-4">
+            <div><label className="text-sm font-medium">Annees d'experience</label><Input type="number" value={statsForm.yearsExperience} onChange={(e) => setStatsForm({ ...statsForm, yearsExperience: Number(e.target.value) })} className="rounded-full" /></div>
+            <div><label className="text-sm font-medium">Clients satisfaits</label><Input type="number" value={statsForm.clientsCount} onChange={(e) => setStatsForm({ ...statsForm, clientsCount: Number(e.target.value) })} className="rounded-full" /></div>
+            <p className="text-xs text-[#6B6B6B]">
+              Projets realises et Articles publies sont calcules automatiquement depuis le site.
+            </p>
+          </div>
+          <DialogFooter>
+            <button onClick={() => setShowStatsDialog(false)} className="pill-btn-outline text-sm">Annuler</button>
+            <button onClick={saveStats} className="pill-btn text-sm">Enregistrer</button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
