@@ -85,7 +85,7 @@ export default function CollectionSurfer({
 
   return (
     <div
-      className="relative w-full overflow-hidden rounded-3xl border bg-white py-10 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]"
+      className="relative w-full overflow-hidden rounded-3xl border bg-background py-10 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]"
       aria-label="Outils"
     >
       <div className="flex gap-6 w-max animate-marquee hover:[animation-play-state:paused] px-6">

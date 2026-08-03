@@ -311,7 +311,7 @@ const SkillsPage = () => {
             <p className="text-[#6B6B6B] mb-8 max-w-2xl">
               Cliquez sur un domaine pour voir le niveau de chaque competence. Les liaisons montrent les connexions entre expertises.
             </p>
-            <div className="relative overflow-hidden rounded-3xl border bg-white px-4 py-14 md:px-8">
+            <div className="relative overflow-hidden rounded-3xl border bg-background px-4 py-14 md:px-8">
               <RadialOrbitalTimeline timelineData={expertiseTimeline} className="h-[520px] sm:h-[600px]" dark={false} />
             </div>
           </div>
