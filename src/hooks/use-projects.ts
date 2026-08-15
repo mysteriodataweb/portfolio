@@ -1,11 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/api/client";
+import type { ProjectCategory } from "@/data/project-categories";
 
 export interface Project {
   id: string;
   slug: string;
   title: string;
-  category: "data-science" | "fullstack" | "hybrid";
+  category: ProjectCategory;
   shortDescription: string;
   fullDescription: string;
   image: string;

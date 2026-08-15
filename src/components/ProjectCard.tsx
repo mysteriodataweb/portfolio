@@ -1,18 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Project } from "@/data/projects";
-
-const categoryColors: Record<string, string> = {
-  "data-science": "bg-accent/10 text-accent border-accent/20",
-  fullstack: "bg-foreground/5 text-foreground border-foreground/10",
-  hybrid: "bg-accent/5 text-accent border-accent/15",
-};
-
-const categoryLabels: Record<string, string> = {
-  "data-science": "Data Science",
-  fullstack: "Fullstack",
-  hybrid: "Hybride",
-};
+import { categoryColors, categoryLabel } from "@/data/project-categories";
 
 const ProjectCard = ({ project }: { project: Project }) => {
   return (
@@ -28,8 +17,8 @@ const ProjectCard = ({ project }: { project: Project }) => {
           loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        <span className={`absolute top-4 left-4 text-xs font-semibold px-4 py-1.5 rounded-full border ${categoryColors[project.category]}`}>
-          {categoryLabels[project.category]}
+        <span className={`absolute top-4 left-4 text-xs font-semibold px-4 py-1.5 rounded-full border ${categoryColors[project.category] || categoryColors["data-science"]}`}>
+          {categoryLabel(project.category)}
         </span>
       </div>
       <div className="p-6">

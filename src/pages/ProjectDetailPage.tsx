@@ -4,16 +4,11 @@ import { ArrowLeft, ArrowRight, Github, ExternalLink, Pencil, Save, X } from "lu
 import AnimatedSection from "@/components/AnimatedSection";
 import { useProject, useAllProjects } from "@/hooks/use-projects";
 import { useAdmin } from "@/contexts/AdminContext";
+import { categoryLabel } from "@/data/project-categories";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api } from "@/api/client";
 import { toast } from "sonner";
-
-const categoryLabels: Record<string, string> = {
-  "data-science": "Data Science",
-  fullstack: "Fullstack",
-  hybrid: "Hybride",
-};
 
 const ProjectDetailPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -162,7 +157,7 @@ const ProjectDetailPage = () => {
               <div className="sticky top-28 bg-white border border-border rounded-2xl p-6 space-y-6">
                 <div>
                   <span className="text-xs text-[#6B6B6B] uppercase tracking-wider font-medium">Categorie</span>
-                  <p className="font-medium text-foreground mt-1">{categoryLabels[project.category]}</p>
+                  <p className="font-medium text-foreground mt-1">{categoryLabel(project.category)}</p>
                 </div>
                 <div>
                   <span className="text-xs text-[#6B6B6B] uppercase tracking-wider font-medium">Date</span>

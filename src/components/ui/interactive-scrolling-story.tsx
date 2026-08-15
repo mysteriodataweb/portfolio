@@ -6,6 +6,7 @@ export interface StorySlide {
   image: string;
   bgColor: string;
   textColor: string;
+  badge?: string;
   ctaHref?: string;
 }
 
@@ -145,6 +146,11 @@ export function InteractiveScrollingStory({
                         : "opacity-0 translate-y-10"
                     }`}
                   >
+                    {slide.badge && (
+                      <span className="inline-block mb-4 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-white/25 text-white border border-white/40 backdrop-blur md:bg-black md:text-white md:border-transparent">
+                        {slide.badge}
+                      </span>
+                    )}
                     <h2 className="text-4xl md:text-6xl font-bold tracking-tighter">{slide.title}</h2>
                     <p className="mt-6 text-lg md:text-xl max-w-md">{slide.description}</p>
                   </div>
@@ -152,7 +158,7 @@ export function InteractiveScrollingStory({
               </div>
 
               {/* CTA Button */}
-              <div className="absolute bottom-8 left-8 md:bottom-16 md:left-16">
+              <div className="absolute bottom-16 left-8 md:bottom-28 md:left-16">
                 <a
                   href={activeSlide.ctaHref || ctaHref}
                   className="px-10 py-4 bg-black text-white font-semibold rounded-full uppercase tracking-wider hover:bg-gray-800 transition-colors border border-white/40 md:border-black/10"

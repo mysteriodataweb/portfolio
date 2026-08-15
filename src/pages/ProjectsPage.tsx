@@ -9,9 +9,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { api } from "@/api/client";
 import { toast } from "sonner";
 import { InteractiveScrollingStory, StorySlide } from "@/components/ui/interactive-scrolling-story";
+import { PROJECT_CATEGORIES, categoryLabel } from "@/data/project-categories";
 
 const emptyProject = {
-  title: "", slug: "", category: "fullstack", shortDescription: "", fullDescription: "",
+  title: "", slug: "", category: "web-app", shortDescription: "", fullDescription: "",
   image: "/placeholder.svg", techStack: "", demoUrl: "", githubUrl: "", date: new Date().toISOString().split("T")[0],
   featured: false, published: true, context: "", approach: "", results: "", challenges: "",
 };
@@ -31,6 +32,7 @@ const ProjectsPage = () => {
     image: project.image || "/placeholder.svg",
     bgColor: "#F7F4EE",
     textColor: "#000000",
+    badge: categoryLabel(project.category),
     ctaHref: `/projet/${project.slug}`,
   }));
 
@@ -151,9 +153,9 @@ const ProjectsPage = () => {
             <div className="grid grid-cols-2 gap-4">
               <div><label className="text-sm font-medium">Catégorie</label>
                 <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full h-10 px-3 rounded-md border border-border bg-background text-foreground">
-                  <option value="data-science">Data Science</option>
-                  <option value="fullstack">Fullstack</option>
-                  <option value="hybrid">Hybride</option>
+                  {PROJECT_CATEGORIES.map((c) => (
+                    <option key={c.value} value={c.value}>{c.label}</option>
+                  ))}
                 </select>
               </div>
               <div><label className="text-sm font-medium">Date</label><Input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} /></div>

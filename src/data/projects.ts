@@ -4,12 +4,13 @@ import projectAi1 from "@/assets/project-ai-1.jpg";
 import projectHybrid1 from "@/assets/project-hybrid-1.jpg";
 import projectDs2 from "@/assets/project-ds-2.jpg";
 import projectFs2 from "@/assets/project-fs-2.jpg";
+import type { ProjectCategory } from "./project-categories";
 
 export interface Project {
   id: string;
   slug: string;
   title: string;
-  category: "data-science" | "fullstack" | "hybrid";
+  category: ProjectCategory;
   shortDescription: string;
   fullDescription: string;
   image: string;
@@ -46,7 +47,7 @@ export const projects: Project[] = [
     id: "2",
     slug: "ecommerce-platform",
     title: "Plateforme E-commerce Moderne",
-    category: "fullstack",
+    category: "web-app",
     shortDescription: "Application e-commerce complète avec React, Node.js, Stripe et gestion d'inventaire en temps réel.",
     fullDescription: "Plateforme e-commerce fullstack avec panier, paiements Stripe, dashboard admin et système de recommandations.",
     image: projectFs1,
@@ -64,7 +65,7 @@ export const projects: Project[] = [
     id: "3",
     slug: "chatbot-ia-support",
     title: "Chatbot IA Support Client",
-    category: "hybrid",
+    category: "ia",
     shortDescription: "Chatbot intelligent utilisant GPT-4 et RAG pour automatiser 70% du support client.",
     fullDescription: "Système de chatbot avec retrieval-augmented generation, base de connaissances vectorielle et escalade intelligente.",
     image: projectAi1,
@@ -82,7 +83,7 @@ export const projects: Project[] = [
     id: "4",
     slug: "dashboard-analytics-temps-reel",
     title: "Dashboard Analytics Temps Réel",
-    category: "hybrid",
+    category: "data-engineering",
     shortDescription: "Dashboard de monitoring avec visualisations D3.js, WebSockets et alertes automatisées.",
     fullDescription: "Plateforme de monitoring et analytics temps réel pour suivre les KPIs business et techniques avec alertes intelligentes.",
     image: projectHybrid1,
@@ -116,7 +117,7 @@ export const projects: Project[] = [
     id: "6",
     slug: "task-management-app",
     title: "App Gestion de Projets",
-    category: "fullstack",
+    category: "web-app",
     shortDescription: "Application Kanban collaborative avec drag & drop, notifications temps réel et intégration Git.",
     fullDescription: "Outil de gestion de projets agile avec tableaux Kanban, sprints, time tracking et intégrations tierces.",
     image: projectFs2,
