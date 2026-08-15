@@ -1,22 +1,14 @@
 import { useState } from "react";
-import { Plus, Pencil, Archive, ArchiveRestore } from "lucide-react";
-import AnimatedSection from "@/components/AnimatedSection";
-import ProjectCard from "@/components/ProjectCard";
-import ImageUpload from "@/components/ImageUpload";
-import { useProjects, useAllProjects, useArchiveProject, useUnarchiveProject } from "@/hooks/use-projects";
+import { Plus, Pencil, Archive } from "lucide-react";
+import { useProjects, useArchiveProject } from "@/hooks/use-projects";
 import { useAdmin } from "@/contexts/AdminContext";
+import ImageUpload from "@/components/ImageUpload";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { api } from "@/api/client";
 import { toast } from "sonner";
-
-const filters = [
-  { label: "Tous", value: "all" },
-  { label: "Data Science", value: "data-science" },
-  { label: "Fullstack", value: "fullstack" },
-  { label: "Hybrides", value: "hybrid" },
-];
+import { InteractiveScrollingStory, StorySlide } from "@/components/ui/interactive-scrolling-story";
 
 const emptyProject = {
   title: "", slug: "", category: "fullstack", shortDescription: "", fullDescription: "",
@@ -25,16 +17,22 @@ const emptyProject = {
 };
 
 const ProjectsPage = () => {
-  const [activeFilter, setActiveFilter] = useState("all");
-  const { data: projects = [], isLoading } = useProjects(activeFilter);
-  const { data: allProjects = [] } = useAllProjects();
+  const { data: projects = [], isLoading } = useProjects();
   const { isAdmin } = useAdmin();
   const [showDialog, setShowDialog] = useState(false);
   const [editingProject, setEditingProject] = useState<any>(null);
   const [form, setForm] = useState<any>(emptyProject);
   const [saving, setSaving] = useState(false);
   const archiveProject = useArchiveProject();
-  const unarchiveProject = useUnarchiveProject();
+
+  const slides: StorySlide[] = projects.map((project) => ({
+    title: project.title,
+    description: project.fullDescription || project.shortDescription,
+    image: project.image || "/placeholder.svg",
+    bgColor: "#fff100",
+    textColor: "#000000",
+    ctaHref: `/projet/${project.slug}`,
+  }));
 
   const openAdd = () => {
     setEditingProject(null);
@@ -94,72 +92,50 @@ const ProjectsPage = () => {
     }
   };
 
-  const handleUnarchive = async (project: any) => {
-    try {
-      await unarchiveProject.mutateAsync(project.id);
-      toast.success("Projet restauré !");
-    } catch (err: any) {
-      toast.error(err.message || "Erreur");
-    }
+  const renderActions = (activeIndex: number) => {
+    const project = projects[activeIndex];
+    if (!project) return null;
+    return (
+      <>
+        <Button size="sm" variant="secondary" className="h-9 w-9 p-0 rounded-full bg-white/90 hover:bg-white" onClick={() => openEdit(project)}>
+          <Pencil size={14} />
+        </Button>
+        <Button size="sm" variant="secondary" className="h-9 w-9 p-0 rounded-full bg-white/90 hover:bg-white" onClick={() => handleArchive(project)}>
+          <Archive size={14} />
+        </Button>
+      </>
+    );
   };
 
   return (
-    <section className="py-16">
-      <div className="container mx-auto px-6">
-        <AnimatedSection>
-          <div className="flex items-start justify-between mb-10">
-            <div>
-              <h1 className="text-4xl md:text-5xl font-heading font-bold text-foreground mb-4">Mes Projets</h1>
-              <p className="text-lg text-muted-foreground max-w-2xl">
-                Une sélection de mes travaux en data science et développement fullstack.
-              </p>
-            </div>
-            {isAdmin && (
-              <button onClick={openAdd} className="pill-btn text-sm">
-                <Plus className="h-4 w-4 mr-2" /> Nouveau projet
-              </button>
-            )}
-          </div>
-          <div className="flex flex-wrap gap-3 mb-12">
-            {filters.map((f) => (
-              <button key={f.value} onClick={() => setActiveFilter(f.value)}
-                className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${activeFilter === f.value ? "bg-foreground text-white" : "bg-foreground/5 text-[#6B6B6B] hover:text-foreground"}`}>
-                {f.label}
-              </button>
-            ))}
-          </div>
-        </AnimatedSection>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project, i) => (
-            <AnimatedSection key={project.id} delay={i * 0.05}>
-              <div className={`relative group/card ${project.archived ? "opacity-50" : ""}`}>
-                <ProjectCard project={project} />
-                {project.archived && (
-                  <div className="absolute top-3 left-3 z-10 px-2 py-1 bg-orange-500 text-white text-xs font-bold rounded-full">
-                    Archivé
-                  </div>
-                )}
-                {isAdmin && (
-                  <div className="absolute top-3 right-3 z-10 flex gap-1 opacity-0 group-hover/card:opacity-100 transition-opacity">
-                    <Button size="sm" variant="secondary" className="h-8 w-8 p-0" onClick={(e) => { e.preventDefault(); openEdit(project); }}>
-                      <Pencil size={14} />
-                    </Button>
-                    {project.archived ? (
-                      <Button size="sm" variant="secondary" className="h-8 w-8 p-0" onClick={(e) => { e.preventDefault(); handleUnarchive(project); }}>
-                        <ArchiveRestore size={14} />
-                      </Button>
-                    ) : (
-                      <Button size="sm" variant="secondary" className="h-8 w-8 p-0" onClick={(e) => { e.preventDefault(); handleArchive(project); }}>
-                        <Archive size={14} />
-                      </Button>
-                    )}
-                  </div>
-                )}
-              </div>
-            </AnimatedSection>
-          ))}
+    <section className="h-[calc(100vh-80px)] relative">
+      {isLoading && slides.length === 0 ? (
+        <div className="h-full flex items-center justify-center text-[#6B6B6B]">Chargement...</div>
+      ) : slides.length === 0 ? (
+        <div className="h-full flex flex-col items-center justify-center gap-4 text-[#6B6B6B]">
+          <p>Aucun projet publié pour le moment.</p>
+          {isAdmin && (
+            <button onClick={openAdd} className="pill-btn text-sm">
+              <Plus className="h-4 w-4 mr-2" /> Nouveau projet
+            </button>
+          )}
         </div>
-      </div>
+      ) : (
+        <InteractiveScrollingStory
+          slides={slides}
+          ctaLabel="Voir le projet"
+          renderActions={isAdmin ? renderActions : undefined}
+        />
+      )}
+
+      {isAdmin && slides.length > 0 && (
+        <button
+          onClick={openAdd}
+          className="fixed top-24 right-6 z-40 pill-btn text-sm shadow-lg"
+        >
+          <Plus className="h-4 w-4 mr-2" /> Nouveau projet
+        </button>
+      )}
 
       {/* Add/Edit Dialog */}
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
