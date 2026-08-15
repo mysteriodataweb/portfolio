@@ -158,7 +158,7 @@ export function InteractiveScrollingStory({
               </div>
 
               {/* CTA Button */}
-              <div className="absolute bottom-16 left-8 md:bottom-28 md:left-16">
+              <div className="absolute bottom-24 left-8 md:bottom-28 md:left-16">
                 <a
                   href={activeSlide.ctaHref || ctaHref}
                   className="px-10 py-4 bg-black text-white font-semibold rounded-full uppercase tracking-wider hover:bg-gray-800 transition-colors border border-white/40 md:border-black/10"

@@ -17,6 +17,8 @@ const emptyProject = {
   featured: false, published: true, context: "", approach: "", results: "", challenges: "",
 };
 
+const chipBase = "px-4 py-1.5 rounded-full text-sm font-medium border transition-colors";
+
 const ProjectsPage = () => {
   const { data: projects = [], isLoading } = useProjects();
   const { isAdmin } = useAdmin();
@@ -24,9 +26,13 @@ const ProjectsPage = () => {
   const [editingProject, setEditingProject] = useState<any>(null);
   const [form, setForm] = useState<any>(emptyProject);
   const [saving, setSaving] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<string>("all");
   const archiveProject = useArchiveProject();
 
-  const slides: StorySlide[] = projects.map((project) => ({
+  const filtered =
+    activeCategory === "all" ? projects : projects.filter((p) => p.category === activeCategory);
+
+  const slides: StorySlide[] = filtered.map((project) => ({
     title: project.title,
     description: project.fullDescription || project.shortDescription,
     image: project.image || "/placeholder.svg",
@@ -95,7 +101,7 @@ const ProjectsPage = () => {
   };
 
   const renderActions = (activeIndex: number) => {
-    const project = projects[activeIndex];
+    const project = filtered[activeIndex];
     if (!project) return null;
     return (
       <>
@@ -110,34 +116,60 @@ const ProjectsPage = () => {
   };
 
   return (
-    <section className="h-[calc(100vh-80px)] relative">
-      {isLoading && slides.length === 0 ? (
-        <div className="h-full flex items-center justify-center text-[#6B6B6B]">Chargement...</div>
-      ) : slides.length === 0 ? (
-        <div className="h-full flex flex-col items-center justify-center gap-4 text-[#6B6B6B]">
-          <p>Aucun projet publié pour le moment.</p>
-          {isAdmin && (
-            <button onClick={openAdd} className="pill-btn text-sm">
-              <Plus className="h-4 w-4 mr-2" /> Nouveau projet
-            </button>
-          )}
-        </div>
-      ) : (
-        <InteractiveScrollingStory
-          slides={slides}
-          ctaLabel="Voir le projet"
-          renderActions={isAdmin ? renderActions : undefined}
-        />
-      )}
-
-      {isAdmin && slides.length > 0 && (
+    <section className="h-[calc(100vh-80px)] relative flex flex-col">
+      {/* Category filter bar */}
+      <div className="shrink-0 bg-[#F7F4EE] border-b border-black/5 px-4 py-3 flex flex-wrap items-center justify-center gap-2 z-10">
         <button
-          onClick={openAdd}
-          className="fixed top-24 right-6 z-40 pill-btn text-sm shadow-lg"
+          onClick={() => setActiveCategory("all")}
+          className={`${chipBase} ${
+            activeCategory === "all"
+              ? "bg-black text-white border-black"
+              : "bg-white/70 text-black border-black/10 hover:border-black/40"
+          }`}
         >
-          <Plus className="h-4 w-4 mr-2" /> Nouveau projet
+          Tout
         </button>
-      )}
+        {PROJECT_CATEGORIES.map((c) => (
+          <button
+            key={c.value}
+            onClick={() => setActiveCategory(c.value)}
+            className={`${chipBase} ${
+              activeCategory === c.value
+                ? "bg-black text-white border-black"
+                : "bg-white/70 text-black border-black/10 hover:border-black/40"
+            }`}
+          >
+            {c.label}
+          </button>
+        ))}
+        {isAdmin && (
+          <button onClick={openAdd} className={`${chipBase} border-accent/40 text-foreground hover:border-accent`}>
+            <Plus className="h-4 w-4 mr-1 inline" /> Nouveau projet
+          </button>
+        )}
+      </div>
+
+      <div className="flex-1 relative min-h-0">
+        {isLoading && slides.length === 0 ? (
+          <div className="h-full flex items-center justify-center text-[#6B6B6B]">Chargement...</div>
+        ) : slides.length === 0 ? (
+          <div className="h-full flex flex-col items-center justify-center gap-4 text-[#6B6B6B]">
+            <p>{activeCategory === "all" ? "Aucun projet publié pour le moment." : "Aucun projet dans cette catégorie."}</p>
+            {isAdmin && (
+              <button onClick={openAdd} className="pill-btn text-sm">
+                <Plus className="h-4 w-4 mr-2" /> Nouveau projet
+              </button>
+            )}
+          </div>
+        ) : (
+          <InteractiveScrollingStory
+            key={activeCategory}
+            slides={slides}
+            ctaLabel="Voir le projet"
+            renderActions={isAdmin ? renderActions : undefined}
+          />
+        )}
+      </div>
 
       {/* Add/Edit Dialog */}
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
