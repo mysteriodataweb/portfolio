@@ -77,8 +77,7 @@ export function InteractiveScrollingStory({
 
   const dynamicStyles = {
     backgroundColor: activeSlide.bgColor || "#F7F4EE",
-    color: activeSlide.textColor || "#000000",
-    transition: "background-color 0.7s ease, color 0.7s ease",
+    transition: "background-color 0.7s ease",
     height: panelH || "100%",
   } as React.CSSProperties;
 
@@ -89,10 +88,33 @@ export function InteractiveScrollingStory({
       style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
     >
       <div style={{ height: panelH ? slides.length * panelH : `${slides.length * 100}vh` }}>
-        <div className="sticky top-0 w-full flex flex-col items-center justify-center" style={dynamicStyles}>
+        <div className="sticky top-0 w-full flex flex-col items-center justify-center relative overflow-hidden" style={dynamicStyles}>
+          {/* Mobile background image */}
+          <div className="md:hidden absolute inset-0 overflow-hidden">
+            <div
+              className="absolute top-0 left-0 w-full h-full transition-transform duration-700 ease-in-out"
+              style={{ transform: `translateY(-${activeIndex * 100}%)` }}
+            >
+              {slides.map((slide, index) => (
+                <div key={index} className="w-full h-full">
+                  <img
+                    src={slide.image}
+                    alt={slide.title}
+                    className="h-full w-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = "https://placehold.co/800x1200/e2e8f0/4a5568?text=Image+Not+Found";
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="absolute inset-0 bg-black/50" />
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 h-full w-full max-w-7xl mx-auto">
             {/* Left Column: Text Content, Pagination & Button */}
-            <div className="relative flex flex-col justify-center p-8 md:p-16 border-r border-black/10">
+            <div className="relative flex flex-col justify-center p-8 md:p-16 border-r border-black/10 text-white md:text-black">
               {/* Pagination Bars */}
               <div className="absolute top-8 left-8 md:top-16 md:left-16 flex space-x-2">
                 {slides.map((_, index) => (
@@ -100,7 +122,7 @@ export function InteractiveScrollingStory({
                     key={index}
                     onClick={() => scrollToSlide(index)}
                     className={`h-1 rounded-full transition-all duration-500 ease-in-out ${
-                      index === activeIndex ? "w-12 bg-black/80" : "w-6 bg-black/20"
+                      index === activeIndex ? "w-12 bg-white/90 md:bg-black/80" : "w-6 bg-white/40 md:bg-black/20"
                     }`}
                     aria-label={`Aller à la diapositive ${index + 1}`}
                   />
@@ -133,7 +155,7 @@ export function InteractiveScrollingStory({
               <div className="absolute bottom-8 left-8 md:bottom-16 md:left-16">
                 <a
                   href={activeSlide.ctaHref || ctaHref}
-                  className="px-10 py-4 bg-black text-white font-semibold rounded-full uppercase tracking-wider hover:bg-gray-800 transition-colors"
+                  className="px-10 py-4 bg-black text-white font-semibold rounded-full uppercase tracking-wider hover:bg-gray-800 transition-colors border border-white/40 md:border-black/10"
                 >
                   {ctaLabel}
                 </a>
