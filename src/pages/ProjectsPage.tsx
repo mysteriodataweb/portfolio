@@ -29,7 +29,7 @@ const ProjectsPage = () => {
     title: project.title,
     description: project.fullDescription || project.shortDescription,
     image: project.image || "/placeholder.svg",
-    bgColor: "#fff100",
+    bgColor: "#F7F4EE",
     textColor: "#000000",
     ctaHref: `/projet/${project.slug}`,
   }));

@@ -76,7 +76,7 @@ export function InteractiveScrollingStory({
   } as React.CSSProperties;
 
   const dynamicStyles = {
-    backgroundColor: activeSlide.bgColor || "#fff100",
+    backgroundColor: activeSlide.bgColor || "#F7F4EE",
     color: activeSlide.textColor || "#000000",
     transition: "background-color 0.7s ease, color 0.7s ease",
     height: panelH || "100%",
