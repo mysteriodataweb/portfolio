@@ -9,6 +9,7 @@ import { useUnreadCount } from "@/hooks/use-messages";
 const navLinks = [
   { label: "Projets", href: "/projets" },
   { label: "Competences", href: "/competences" },
+  { label: "Engagements", href: "/engagements" },
   { label: "Blog", href: "/blog" },
   { label: "CV", href: "/cv" },
   { label: "A propos", href: "/about" },
