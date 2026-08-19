@@ -31,10 +31,10 @@ const Footer = () => {
           <div>
             <h4 className="font-heading font-semibold text-white mb-4">Contact</h4>
             <div className="flex flex-col gap-3">
-              <a href="https://github.com/Mysteriowebdata" target="_blank" rel="noopener noreferrer" className="text-sm text-white/60 hover:text-white transition-colors inline-flex items-center gap-2" aria-label="GitHub">
+              <a href="https://github.com/mysteriodataweb" target="_blank" rel="noopener noreferrer" className="text-sm text-white/60 hover:text-white transition-colors inline-flex items-center gap-2" aria-label="GitHub">
                 <Github size={16} /> GitHub <ArrowUpRight size={12} />
               </a>
-              <a href="https://linkedin.com/in/AlfredMysteriowebdata" target="_blank" rel="noopener noreferrer" className="text-sm text-white/60 hover:text-white transition-colors inline-flex items-center gap-2" aria-label="LinkedIn">
+              <a href="https://www.linkedin.com/in/alfredbiam" target="_blank" rel="noopener noreferrer" className="text-sm text-white/60 hover:text-white transition-colors inline-flex items-center gap-2" aria-label="LinkedIn">
                 <Linkedin size={16} /> LinkedIn <ArrowUpRight size={12} />
               </a>
               <a href="mailto:fredbiam9@gmail.com" className="text-sm text-white/60 hover:text-white transition-colors inline-flex items-center gap-2" aria-label="Email">
