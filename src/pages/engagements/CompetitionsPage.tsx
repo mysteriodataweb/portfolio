@@ -23,7 +23,7 @@ const DEFAULTS = {
     {
       heading: "Algorithmique",
       subtitle: "Structures de données & Complexité",
-      description: "Les compétitions d'algorithmique affûtent la rigueur et la capacité à résoudre des problèmes sous contrainte.",
+      description: "Les compétitions d'algorithmique affûtent la rigueur et la capacité à résoudre des problèmes sous contrainte. Du dynamic programming au graph theory, chaque problem set est un exercice de style.",
       image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=900&auto=format&fit=crop&q=60",
     },
     {
@@ -35,7 +35,7 @@ const DEFAULTS = {
     {
       heading: "Toujours progresser",
       subtitle: "Résilience & Apprentissage",
-      description: "Chaque défaite est une leçon. Chaque victoire, une confirmation que le processus fonctionne. L'important, c'est de revenir.",
+      description: "Chaque défaite est une leçon. Chaque victoire, une confirmation que le processus fonctionne. L'important, c'est de revenir, encore et encore.",
       image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=900&auto=format&fit=crop&q=60",
     },
   ],
@@ -46,14 +46,10 @@ export default function CompetitionsPage() {
   const { data, isEditing, setIsEditing, save, updateSection } = useEngagementData("competitions", DEFAULTS);
 
   const pages: ScrollPage[] = data.sections.map((s) => ({
-    leftBgImage: s.image || null,
-    rightBgImage: null,
-    leftContent: null,
-    rightContent: {
-      heading: s.heading,
-      subtitle: s.subtitle,
-      description: s.description,
-    },
+    image: s.image || null,
+    heading: s.heading,
+    subtitle: s.subtitle,
+    description: s.description,
   }));
 
   return (
@@ -79,12 +75,7 @@ export default function CompetitionsPage() {
       {isAdmin && isEditing && (
         <>
           {data.sections.map((section, i) => (
-            <EngagementSectionEditor
-              key={i}
-              section={section}
-              index={i}
-              onSave={updateSection}
-            />
+            <EngagementSectionEditor key={i} section={section} index={i} onSave={updateSection} />
           ))}
           <button
             onClick={() => save(data)}

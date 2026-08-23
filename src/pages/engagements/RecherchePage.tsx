@@ -22,14 +22,10 @@ export default function RecherchePage() {
   const { data, isEditing, setIsEditing, save, updateSection } = useEngagementData("recherche", DEFAULTS);
 
   const pages: ScrollPage[] = data.sections.map((s) => ({
-    leftBgImage: s.image || null,
-    rightBgImage: null,
-    leftContent: null,
-    rightContent: {
-      heading: s.heading,
-      subtitle: s.subtitle,
-      description: s.description,
-    },
+    image: s.image || null,
+    heading: s.heading,
+    subtitle: s.subtitle,
+    description: s.description,
   }));
 
   return (
@@ -55,12 +51,7 @@ export default function RecherchePage() {
       {isAdmin && isEditing && (
         <>
           {data.sections.map((section, i) => (
-            <EngagementSectionEditor
-              key={i}
-              section={section}
-              index={i}
-              onSave={updateSection}
-            />
+            <EngagementSectionEditor key={i} section={section} index={i} onSave={updateSection} />
           ))}
           <button
             onClick={() => save(data)}

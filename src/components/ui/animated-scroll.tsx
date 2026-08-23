@@ -3,18 +3,10 @@ import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
 export interface ScrollPage {
-  leftBgImage?: string | null;
-  rightBgImage?: string | null;
-  leftContent?: {
-    heading: string;
-    subtitle?: string;
-    description: React.ReactNode;
-  } | null;
-  rightContent?: {
-    heading: string;
-    subtitle?: string;
-    description: React.ReactNode;
-  } | null;
+  image?: string | null;
+  heading: string;
+  subtitle?: string;
+  description: React.ReactNode;
 }
 
 interface AnimatedScrollProps {
@@ -23,28 +15,28 @@ interface AnimatedScrollProps {
 }
 
 export default function AnimatedScroll({ pages, backTo }: AnimatedScrollProps) {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const numOfPages = pages.length;
   const scrolling = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const touchStart = useRef<number | null>(null);
 
-  const navigateUp = useCallback(() => {
-    setCurrentPage((p) => (p > 1 ? p - 1 : p));
-  }, []);
-
-  const navigateDown = useCallback(() => {
-    setCurrentPage((p) => (p < numOfPages ? p + 1 : p));
+  const goNext = useCallback(() => {
+    setCurrentPage((p) => (p < numOfPages - 1 ? p + 1 : p));
   }, [numOfPages]);
+
+  const goPrev = useCallback(() => {
+    setCurrentPage((p) => (p > 0 ? p - 1 : p));
+  }, []);
 
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
       if (scrolling.current) return;
       scrolling.current = true;
       if (e.deltaY > 0) {
-        navigateDown();
+        goNext();
       } else {
-        navigateUp();
+        goPrev();
       }
       setTimeout(() => (scrolling.current = false), 1400);
     };
@@ -53,11 +45,11 @@ export default function AnimatedScroll({ pages, backTo }: AnimatedScrollProps) {
       if (scrolling.current) return;
       if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
         scrolling.current = true;
-        navigateUp();
+        goPrev();
         setTimeout(() => (scrolling.current = false), 1400);
       } else if (e.key === "ArrowDown" || e.key === "ArrowRight") {
         scrolling.current = true;
-        navigateDown();
+        goNext();
         setTimeout(() => (scrolling.current = false), 1400);
       }
     };
@@ -72,9 +64,9 @@ export default function AnimatedScroll({ pages, backTo }: AnimatedScrollProps) {
       if (Math.abs(diff) < 50) return;
       scrolling.current = true;
       if (diff > 0) {
-        navigateDown();
+        goNext();
       } else {
-        navigateUp();
+        goPrev();
       }
       setTimeout(() => (scrolling.current = false), 1400);
       touchStart.current = null;
@@ -91,149 +83,86 @@ export default function AnimatedScroll({ pages, backTo }: AnimatedScrollProps) {
       el.removeEventListener("touchstart", handleTouchStart);
       el.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [navigateDown, navigateUp]);
+  }, [goNext, goPrev]);
+
+  const imageOnLeft = (i: number) => i % 2 === 0;
 
   return (
-    <div ref={containerRef} className="relative overflow-hidden h-screen">
+    <div ref={containerRef} className="relative overflow-hidden h-screen bg-[#F7F4EE]">
       {pages.map((page, i) => {
-        const idx = i + 1;
-        const isActive = currentPage === idx;
-        const isPrev = currentPage > idx;
-        const isNext = currentPage < idx;
+        const isActive = i === currentPage;
+        const isPrev = i < currentPage;
+
+        const imgLeft = imageOnLeft(i);
 
         return (
-          <div key={idx} className="absolute inset-0">
-            {/* Left Half */}
+          <div key={i} className="absolute inset-0">
+            {/* Image half */}
             <div
-              className="absolute top-0 left-0 w-1/2 h-full"
+              className="absolute top-0 h-full w-1/2 bg-cover bg-center"
               style={{
-                transform: isActive
-                  ? "translateY(0)"
-                  : isPrev
-                  ? "translateY(-100%)"
-                  : "translateY(100%)",
-                transition: isActive
-                  ? "transform 1s cubic-bezier(0.77, 0, 0.175, 1) 0.15s, opacity 0.8s ease 0.15s"
-                  : "transform 1s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.6s ease",
-                opacity: isActive ? 1 : 0,
+                [imgLeft ? "left" : "right"]: 0,
+                backgroundImage: page.image ? `url(${page.image})` : undefined,
+                backgroundColor: page.image ? undefined : "#e8e4dc",
+              }}
+            >
+              {page.image && <div className="absolute inset-0 bg-black/15" />}
+            </div>
+
+            {/* Text half — real selectable text, z-10 above everything */}
+            <div
+              className="absolute top-0 h-full w-1/2 flex items-center justify-center z-10"
+              style={{
+                [imgLeft ? "right" : "left"]: 0,
+                backgroundColor: "#F7F4EE",
               }}
             >
               <div
-                className="w-full h-full bg-cover bg-center bg-no-repeat"
+                className="max-w-md px-8 md:px-12"
                 style={{
-                  backgroundImage: page.leftBgImage
-                    ? `url(${page.leftBgImage})`
-                    : undefined,
-                  backgroundColor: page.leftBgImage ? undefined : "#F7F4EE",
+                  opacity: isActive ? 1 : 0,
+                  transform: isActive ? "translateY(0)" : isPrev ? "translateY(-30px)" : "translateY(30px)",
+                  transition: "opacity 0.7s ease 0.3s, transform 0.7s cubic-bezier(0.33, 1, 0.68, 1) 0.3s",
                 }}
               >
-                {page.leftBgImage && (
-                  <div className="absolute inset-0 bg-black/20" />
+                <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-2 tracking-tight">
+                  {page.heading}
+                </h2>
+                {page.subtitle && (
+                  <p className="text-sm font-medium text-accent mb-4 uppercase tracking-wider">
+                    {page.subtitle}
+                  </p>
                 )}
-                <div className="relative flex flex-col items-center justify-center h-full p-8 md:p-12">
-                  {page.leftContent && (
-                    <div
-                      className="text-center max-w-md"
-                      style={{
-                        transform: isActive ? "translateY(0) scale(1)" : "translateY(20px) scale(0.98)",
-                        transition: "transform 0.8s cubic-bezier(0.33, 1, 0.68, 1) 0.4s, opacity 0.6s ease 0.4s",
-                        opacity: isActive ? 1 : 0,
-                      }}
-                    >
-                      <h2
-                        className={`text-3xl md:text-4xl uppercase mb-3 tracking-wide font-heading font-bold ${
-                          page.leftBgImage ? "text-white" : "text-foreground"
-                        }`}
-                      >
-                        {page.leftContent.heading}
-                      </h2>
-                      {page.leftContent.subtitle && (
-                        <p
-                          className={`text-sm mb-4 font-medium ${
-                            page.leftBgImage ? "text-white/70" : "text-accent"
-                          }`}
-                        >
-                          {page.leftContent.subtitle}
-                        </p>
-                      )}
-                      <div
-                        className={`text-base md:text-lg leading-relaxed ${
-                          page.leftBgImage ? "text-white/90" : "text-[#6B6B6B]"
-                        }`}
-                      >
-                        {page.leftContent.description}
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <p className="text-base md:text-lg text-[#6B6B6B] leading-relaxed">
+                  {page.description}
+                </p>
               </div>
             </div>
 
-            {/* Right Half */}
-            <div
-              className="absolute top-0 left-1/2 w-1/2 h-full"
-              style={{
-                transform: isActive
-                  ? "translateY(0)"
-                  : isPrev
-                  ? "translateY(-100%)"
-                  : "translateY(100%)",
-                transition: isActive
-                  ? "transform 1s cubic-bezier(0.77, 0, 0.175, 1) 0.3s, opacity 0.8s ease 0.3s"
-                  : "transform 1s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.6s ease",
-                opacity: isActive ? 1 : 0,
-              }}
-            >
+            {/* Active section: image slides in with stagger */}
+            {isActive && page.image && (
               <div
-                className="w-full h-full bg-cover bg-center bg-no-repeat"
+                className="absolute top-0 h-full w-1/2 bg-cover bg-center pointer-events-none"
                 style={{
-                  backgroundImage: page.rightBgImage
-                    ? `url(${page.rightBgImage})`
-                    : undefined,
-                  backgroundColor: page.rightBgImage ? undefined : "#F7F4EE",
+                  [imgLeft ? "left" : "right"]: 0,
+                  backgroundImage: `url(${page.image})`,
+                  opacity: 0,
+                  transform: "translateY(40px)",
+                  transition: "opacity 0.8s ease, transform 0.8s cubic-bezier(0.33, 1, 0.68, 1)",
+                  transitionDelay: "0.1s",
+                }}
+                ref={(el) => {
+                  if (el && isActive) {
+                    requestAnimationFrame(() => {
+                      el.style.opacity = "1";
+                      el.style.transform = "translateY(0)";
+                    });
+                  }
                 }}
               >
-                {page.rightBgImage && (
-                  <div className="absolute inset-0 bg-black/20" />
-                )}
-                <div className="relative flex flex-col items-center justify-center h-full p-8 md:p-12">
-                  {page.rightContent && (
-                    <div
-                      className="text-center max-w-md"
-                      style={{
-                        transform: isActive ? "translateY(0) scale(1)" : "translateY(20px) scale(0.98)",
-                        transition: "transform 0.8s cubic-bezier(0.33, 1, 0.68, 1) 0.55s, opacity 0.6s ease 0.55s",
-                        opacity: isActive ? 1 : 0,
-                      }}
-                    >
-                      <h2
-                        className={`text-3xl md:text-4xl uppercase mb-3 tracking-wide font-heading font-bold ${
-                          page.rightBgImage ? "text-white" : "text-foreground"
-                        }`}
-                      >
-                        {page.rightContent.heading}
-                      </h2>
-                      {page.rightContent.subtitle && (
-                        <p
-                          className={`text-sm mb-4 font-medium ${
-                            page.rightBgImage ? "text-white/70" : "text-accent"
-                          }`}
-                        >
-                          {page.rightContent.subtitle}
-                        </p>
-                      )}
-                      <div
-                        className={`text-base md:text-lg leading-relaxed ${
-                          page.rightBgImage ? "text-white/90" : "text-[#6B6B6B]"
-                        }`}
-                      >
-                        {page.rightContent.description}
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <div className="absolute inset-0 bg-black/15" />
               </div>
-            </div>
+            )}
           </div>
         );
       })}
@@ -255,13 +184,13 @@ export default function AnimatedScroll({ pages, backTo }: AnimatedScrollProps) {
         {pages.map((_, i) => (
           <button
             key={i}
-            onClick={() => setCurrentPage(i + 1)}
+            onClick={() => setCurrentPage(i)}
             className={`w-2 h-2 rounded-full transition-all duration-300 ${
-              currentPage === i + 1
+              currentPage === i
                 ? "bg-accent scale-125"
                 : "bg-foreground/20 hover:bg-foreground/40"
             }`}
-            aria-label={`Page ${i + 1}`}
+            aria-label={`Section ${i + 1}`}
           />
         ))}
       </div>

@@ -46,14 +46,10 @@ export default function ConferencesPage() {
   const { data, isEditing, setIsEditing, save, updateSection } = useEngagementData("conferences", DEFAULTS);
 
   const pages: ScrollPage[] = data.sections.map((s) => ({
-    leftBgImage: null,
-    rightBgImage: s.image || null,
-    leftContent: {
-      heading: s.heading,
-      subtitle: s.subtitle,
-      description: s.description,
-    },
-    rightContent: null,
+    image: s.image || null,
+    heading: s.heading,
+    subtitle: s.subtitle,
+    description: s.description,
   }));
 
   return (
@@ -79,12 +75,7 @@ export default function ConferencesPage() {
       {isAdmin && isEditing && (
         <>
           {data.sections.map((section, i) => (
-            <EngagementSectionEditor
-              key={i}
-              section={section}
-              index={i}
-              onSave={updateSection}
-            />
+            <EngagementSectionEditor key={i} section={section} index={i} onSave={updateSection} />
           ))}
           <button
             onClick={() => save(data)}
