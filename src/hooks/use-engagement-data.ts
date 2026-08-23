@@ -4,7 +4,8 @@ export interface EngagementSection {
   heading: string;
   subtitle?: string;
   description: string;
-  image?: string;
+  leftImage?: string | null;
+  rightImage?: string | null;
 }
 
 export interface EngagementPageData {

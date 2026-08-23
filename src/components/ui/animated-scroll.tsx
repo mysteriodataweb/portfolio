@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
 export interface ScrollPage {
-  image?: string | null;
+  leftImage?: string | null;
+  rightImage?: string | null;
   heading: string;
   subtitle?: string;
   description: React.ReactNode;
@@ -83,31 +84,54 @@ export default function AnimatedScroll({ pages, backTo }: AnimatedScrollProps) {
     <div ref={containerRef} className="relative overflow-hidden h-screen bg-[#F7F4EE]">
       {pages.map((page, i) => {
         const isActive = i === currentPage;
-        const imgOnLeft = i % 2 === 0;
+
+        const hasLeft = !!page.leftImage;
+        const hasRight = !!page.rightImage;
+        const imgOnLeft = hasLeft && !hasRight ? true : hasRight && !hasLeft ? false : i % 2 === 0;
 
         return (
           <div key={i} className="absolute inset-0">
-            {/* Full-screen background image */}
+            {/* Left image */}
+            {hasLeft && (
+              <div
+                className="absolute top-0 left-0 h-full w-1/2 bg-cover bg-center"
+                style={{ backgroundImage: `url(${page.leftImage})` }}
+              >
+                <div className="absolute inset-0 bg-black/20" />
+              </div>
+            )}
+
+            {/* Right image */}
+            {hasRight && (
+              <div
+                className="absolute top-0 right-0 h-full w-1/2 bg-cover bg-center"
+                style={{ backgroundImage: `url(${page.rightImage})` }}
+              >
+                <div className="absolute inset-0 bg-black/20" />
+              </div>
+            )}
+
+            {/* Cream panel on text side (when only one image) */}
+            {hasLeft !== hasRight && (
+              <div
+                className="absolute top-0 h-full w-1/2 bg-[#F7F4EE]"
+                style={{ [imgOnLeft ? "right" : "left"]: 0 }}
+              />
+            )}
+
+            {/* Both images: overlay cream strip for text */}
+            {hasLeft && hasRight && (
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 h-full w-[45%] bg-[#F7F4EE]/90 backdrop-blur-sm z-10" />
+            )}
+
+            {/* Text content */}
             <div
-              className="absolute inset-0 bg-cover bg-center"
+              className="absolute top-0 h-full flex items-center z-20"
               style={{
-                backgroundImage: page.image ? `url(${page.image})` : undefined,
-                backgroundColor: page.image ? "#ddd" : "#F7F4EE",
+                width: hasLeft && hasRight ? "45%" : "50%",
+                [hasLeft && !hasRight ? "right" : hasRight && !hasLeft ? "left" : "left"]: hasLeft && !hasRight ? 0 : hasRight && !hasLeft ? 0 : "50%",
+                transform: hasLeft && hasRight ? "translateX(-50%)" : undefined,
               }}
-            >
-              <div className="absolute inset-0 bg-black/25" />
-            </div>
-
-            {/* Cream panel on text side */}
-            <div
-              className="absolute top-0 h-full w-1/2 bg-[#F7F4EE]"
-              style={{ [imgOnLeft ? "right" : "left"]: 0 }}
-            />
-
-            {/* Text content — real selectable text */}
-            <div
-              className="absolute top-0 h-full w-1/2 flex items-center z-10"
-              style={{ [imgOnLeft ? "right" : "left"]: 0 }}
             >
               <div
                 className="w-full max-w-md px-8 md:px-12 select-text"

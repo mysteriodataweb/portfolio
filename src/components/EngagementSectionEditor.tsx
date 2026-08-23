@@ -31,13 +31,13 @@ export default function EngagementSectionEditor({
         onClick={() => setOpen(true)}
         className="fixed bottom-8 right-8 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-white text-sm font-semibold shadow-lg hover:bg-accent/80 transition-colors"
       >
-        <Pencil size={14} /> Modifier la section
+        <Pencil size={14} /> Modifier section {index + 1}
       </button>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Modifier la section {index + 1}</DialogTitle>
+            <DialogTitle>Section {index + 1}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div>
@@ -52,7 +52,7 @@ export default function EngagementSectionEditor({
               <Input
                 value={form.subtitle || ""}
                 onChange={(e) => setForm({ ...form, subtitle: e.target.value })}
-                placeholder="Ex: Mars 2026 · Abidjan, Côte d'Ivoire"
+                placeholder="Ex: Mars 2026 · Abidjan"
               />
             </div>
             <div>
@@ -63,14 +63,25 @@ export default function EngagementSectionEditor({
                 className="w-full h-32 px-3 py-2 rounded-md border border-border bg-background text-foreground text-sm"
               />
             </div>
-            <div>
-              <label className="text-sm font-medium flex items-center gap-2 mb-2">
-                <ImagePlus size={14} /> Image
-              </label>
-              <ImageUpload
-                value={form.image || ""}
-                onChange={(url) => setForm({ ...form, image: url })}
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium flex items-center gap-2 mb-2">
+                  <ImagePlus size={14} /> Image gauche
+                </label>
+                <ImageUpload
+                  value={form.leftImage || ""}
+                  onChange={(url) => setForm({ ...form, leftImage: url })}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium flex items-center gap-2 mb-2">
+                  <ImagePlus size={14} /> Image droite
+                </label>
+                <ImageUpload
+                  value={form.rightImage || ""}
+                  onChange={(url) => setForm({ ...form, rightImage: url })}
+                />
+              </div>
             </div>
           </div>
           <DialogFooter>

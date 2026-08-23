@@ -12,7 +12,8 @@ const DEFAULTS = {
       heading: "Recherche & Veille",
       subtitle: "Exploration & Innovation",
       description: "Tester de nouveaux modèles, explorer les dernières avancées en IA et documenter ce que j'apprends pour le partager.",
-      image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=900&auto=format&fit=crop&q=60",
+      leftImage: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=900&auto=format&fit=crop&q=60",
+      rightImage: null,
     },
   ],
 };
@@ -22,7 +23,8 @@ export default function RecherchePage() {
   const { data, isEditing, setIsEditing, save, updateSection } = useEngagementData("recherche", DEFAULTS);
 
   const pages: ScrollPage[] = data.sections.map((s) => ({
-    image: s.image || null,
+    leftImage: s.leftImage || null,
+    rightImage: s.rightImage || null,
     heading: s.heading,
     subtitle: s.subtitle,
     description: s.description,

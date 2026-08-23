@@ -12,31 +12,36 @@ const DEFAULTS = {
       heading: "Compétitions",
       subtitle: "Data Science & Algorithmique",
       description: "Formuler un problème, explorer les données, comparer des approches et apprendre de chaque itération. C'est ça, le vrai moteur.",
-      image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=900&auto=format&fit=crop&q=60",
+      leftImage: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=900&auto=format&fit=crop&q=60",
+      rightImage: null,
     },
     {
       heading: "Data Science Challenge",
       subtitle: "Kaggle & Hackathons",
       description: "Participation à des challenges Kaggle et hackathons data. XGBoost, feature engineering, optimisation bayésienne : chaque compétition est un laboratoire.",
-      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&auto=format&fit=crop&q=60",
+      leftImage: null,
+      rightImage: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&auto=format&fit=crop&q=60",
     },
     {
       heading: "Algorithmique",
       subtitle: "Structures de données & Complexité",
       description: "Les compétitions d'algorithmique affûtent la rigueur et la capacité à résoudre des problèmes sous contrainte. Du dynamic programming au graph theory, chaque problem set est un exercice de style.",
-      image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=900&auto=format&fit=crop&q=60",
+      leftImage: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=900&auto=format&fit=crop&q=60",
+      rightImage: null,
     },
     {
       heading: "Esprit d'équipe",
       subtitle: "Collaboration & Leadership",
       description: "Les meilleures solutions naissent de la collaboration. Travailler en équipe, défendre ses choix, adapter son approche : la compétition forge autant que le résultat final.",
-      image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=900&auto=format&fit=crop&q=60",
+      leftImage: null,
+      rightImage: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=900&auto=format&fit=crop&q=60",
     },
     {
       heading: "Toujours progresser",
       subtitle: "Résilience & Apprentissage",
       description: "Chaque défaite est une leçon. Chaque victoire, une confirmation que le processus fonctionne. L'important, c'est de revenir, encore et encore.",
-      image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=900&auto=format&fit=crop&q=60",
+      leftImage: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=900&auto=format&fit=crop&q=60",
+      rightImage: null,
     },
   ],
 };
@@ -46,7 +51,8 @@ export default function CompetitionsPage() {
   const { data, isEditing, setIsEditing, save, updateSection } = useEngagementData("competitions", DEFAULTS);
 
   const pages: ScrollPage[] = data.sections.map((s) => ({
-    image: s.image || null,
+    leftImage: s.leftImage || null,
+    rightImage: s.rightImage || null,
     heading: s.heading,
     subtitle: s.subtitle,
     description: s.description,
