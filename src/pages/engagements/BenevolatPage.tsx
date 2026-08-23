@@ -2,65 +2,98 @@ import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import AnimatedScroll from "@/components/ui/animated-scroll";
 import type { ScrollPage } from "@/components/ui/animated-scroll";
+import { useEngagementData } from "@/hooks/use-engagement-data";
+import EngagementSectionEditor from "@/components/EngagementSectionEditor";
+import { useAdmin } from "@/contexts/AdminContext";
 
-const pages: ScrollPage[] = [
-  {
-    leftBgImage:
-      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=900&auto=format&fit=crop&q=60",
-    rightContent: {
+const DEFAULTS = {
+  sections: [
+    {
       heading: "Bénévolat & Mentorat",
-      description:
-        "Accompagner des débutants, contribuer à des projets communautaires et rendre la tech plus accessible. C'est un engagement au quotidien.",
+      subtitle: "Transmission & Accessibilité",
+      description: "Accompagner des débutants, contribuer à des projets communautaires et rendre la tech plus accessible. C'est un engagement au quotidien.",
+      image: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=900&auto=format&fit=crop&q=60",
     },
-  },
-  {
-    leftBgImage:
-      "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=900&auto=format&fit=crop&q=60",
-    rightContent: {
-      heading: "Mentorat",
-      description:
-        "Guider un débutant dans son premier projet, c'est revivre ses propres débuts et réaliser à quel point le partage transforme les deux côtés de l'équation.",
+    {
+      heading: "Mentorat individuel",
+      subtitle: "2025 – Aujourd'hui · Côte d'Ivoire",
+      description: "Accompagnement de 5 étudiants en informatique : de la découverte de Python aux premiers projets data science. Suivi hebdomadaire, code review et guidance sur les choix de carrière.",
+      image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=900&auto=format&fit=crop&q=60",
     },
-  },
-  {
-    leftBgImage:
-      "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=900&auto=format&fit=crop&q=60",
-    rightContent: {
-      heading: "Projets communautaires",
-      description:
-        "Contribuer à des initiatives open source ou des projets à impact social. La tech a le pouvoir de résoudre des problèmes concrets, à condition qu'elle soit accessible à tous.",
+    {
+      heading: "Ateliers communautaires",
+      subtitle: "2025 · Ouagadougou & Abidjan",
+      description: "Animation d'ateliers de initiation à la programmation pour des lycéens et étudiants. Découverte du web, de la logique algorithmique et des métiers de la tech.",
+      image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=900&auto=format&fit=crop&q=60",
     },
-  },
-  {
-    leftBgImage:
-      "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=900&auto=format&fit=crop&q=60",
-    rightContent: {
-      heading: "Accessibilité",
-      description:
-        "Rendre la tech plus accessible, c'est aussi démystifier le jargon, créer des ressources claires et montrer que tout le monde peut apprendre à coder, peu importe son parcours.",
+    {
+      heading: "Open Source",
+      subtitle: "Contributions",
+      description: "Contribuer à des projets open source et des initiatives à impact social. La tech a le pouvoir de résoudre des problèmes concrets, à condition qu'elle soit accessible à tous.",
+      image: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=900&auto=format&fit=crop&q=60",
     },
-  },
-  {
-    leftBgImage:
-      "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=900&auto=format&fit=crop&q=60",
-    rightContent: {
+    {
       heading: "Impact durable",
-      description:
-        "Le bénévolat n'est pas un sprint, c'est un marathon. Construire quelque chose de durable, former les formateurs, et créer un cercle vertueux de transmission des connaissances.",
+      subtitle: "Vision long terme",
+      description: "Le bénévolat n'est pas un sprint, c'est un marathon. Construire quelque chose de durable, former les formateurs, et créer un cercle vertueux de transmission des connaissances.",
+      image: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=900&auto=format&fit=crop&q=60",
     },
-  },
-];
+  ],
+};
 
 export default function BenevolatPage() {
+  const { isAdmin } = useAdmin();
+  const { data, isEditing, setIsEditing, save, updateSection } = useEngagementData("benevolat", DEFAULTS);
+
+  const pages: ScrollPage[] = data.sections.map((s) => ({
+    leftBgImage: s.image || null,
+    rightBgImage: null,
+    leftContent: null,
+    rightContent: {
+      heading: s.heading,
+      subtitle: s.subtitle,
+      description: s.description,
+    },
+  }));
+
   return (
     <div className="relative">
       <Link
         to="/engagements"
-        className="fixed top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-black/60 text-white text-sm font-medium backdrop-blur hover:bg-black/80 transition-colors"
+        className="fixed top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-foreground/80 text-white text-sm font-medium backdrop-blur hover:bg-foreground transition-colors"
       >
         <ArrowLeft size={16} /> Retour
       </Link>
-      <AnimatedScroll pages={pages} />
+
+      <AnimatedScroll pages={pages} backTo="/engagements" />
+
+      {isAdmin && !isEditing && (
+        <button
+          onClick={() => setIsEditing(true)}
+          className="fixed bottom-8 right-8 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-white text-sm font-semibold shadow-lg hover:bg-accent/80 transition-colors"
+        >
+          Modifier les sections
+        </button>
+      )}
+
+      {isAdmin && isEditing && (
+        <>
+          {data.sections.map((section, i) => (
+            <EngagementSectionEditor
+              key={i}
+              section={section}
+              index={i}
+              onSave={updateSection}
+            />
+          ))}
+          <button
+            onClick={() => save(data)}
+            className="fixed bottom-8 right-8 z-50 flex items-center gap-2 px-6 py-3 rounded-full bg-green-600 text-white text-sm font-semibold shadow-lg hover:bg-green-700 transition-colors"
+          >
+            Tout enregistrer
+          </button>
+        </>
+      )}
     </div>
   );
 }
