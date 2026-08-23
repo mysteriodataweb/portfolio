@@ -33,11 +33,8 @@ export default function AnimatedScroll({ pages, backTo }: AnimatedScrollProps) {
     const handleWheel = (e: WheelEvent) => {
       if (scrolling.current) return;
       scrolling.current = true;
-      if (e.deltaY > 0) {
-        goNext();
-      } else {
-        goPrev();
-      }
+      if (e.deltaY > 0) goNext();
+      else goPrev();
       setTimeout(() => (scrolling.current = false), 1400);
     };
 
@@ -63,11 +60,8 @@ export default function AnimatedScroll({ pages, backTo }: AnimatedScrollProps) {
       const diff = touchStart.current - e.changedTouches[0].clientY;
       if (Math.abs(diff) < 50) return;
       scrolling.current = true;
-      if (diff > 0) {
-        goNext();
-      } else {
-        goPrev();
-      }
+      if (diff > 0) goNext();
+      else goPrev();
       setTimeout(() => (scrolling.current = false), 1400);
       touchStart.current = null;
     };
@@ -85,84 +79,60 @@ export default function AnimatedScroll({ pages, backTo }: AnimatedScrollProps) {
     };
   }, [goNext, goPrev]);
 
-  const imageOnLeft = (i: number) => i % 2 === 0;
-
   return (
     <div ref={containerRef} className="relative overflow-hidden h-screen bg-[#F7F4EE]">
       {pages.map((page, i) => {
         const isActive = i === currentPage;
-        const isPrev = i < currentPage;
-
-        const imgLeft = imageOnLeft(i);
+        const imgOnLeft = i % 2 === 0;
 
         return (
           <div key={i} className="absolute inset-0">
-            {/* Image half */}
+            {/* Full-screen background image */}
             <div
-              className="absolute top-0 h-full w-1/2 bg-cover bg-center"
+              className="absolute inset-0 bg-cover bg-center"
               style={{
-                [imgLeft ? "left" : "right"]: 0,
                 backgroundImage: page.image ? `url(${page.image})` : undefined,
-                backgroundColor: page.image ? undefined : "#e8e4dc",
+                backgroundColor: page.image ? "#ddd" : "#F7F4EE",
               }}
             >
-              {page.image && <div className="absolute inset-0 bg-black/15" />}
+              <div className="absolute inset-0 bg-black/25" />
             </div>
 
-            {/* Text half — real selectable text, z-10 above everything */}
+            {/* Cream panel on text side */}
             <div
-              className="absolute top-0 h-full w-1/2 flex items-center justify-center z-10"
-              style={{
-                [imgLeft ? "right" : "left"]: 0,
-                backgroundColor: "#F7F4EE",
-              }}
+              className="absolute top-0 h-full w-1/2 bg-[#F7F4EE]"
+              style={{ [imgOnLeft ? "right" : "left"]: 0 }}
+            />
+
+            {/* Text content — real selectable text */}
+            <div
+              className="absolute top-0 h-full w-1/2 flex items-center z-10"
+              style={{ [imgOnLeft ? "right" : "left"]: 0 }}
             >
               <div
-                className="max-w-md px-8 md:px-12"
+                className="w-full max-w-md px-8 md:px-12 select-text"
                 style={{
                   opacity: isActive ? 1 : 0,
-                  transform: isActive ? "translateY(0)" : isPrev ? "translateY(-30px)" : "translateY(30px)",
-                  transition: "opacity 0.7s ease 0.3s, transform 0.7s cubic-bezier(0.33, 1, 0.68, 1) 0.3s",
+                  transform: isActive ? "translateY(0)" : "translateY(25px)",
+                  transition: "opacity 0.7s ease 0.35s, transform 0.7s cubic-bezier(0.33, 1, 0.68, 1) 0.35s",
                 }}
               >
-                <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-2 tracking-tight">
+                <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-3 tracking-tight leading-tight">
                   {page.heading}
                 </h2>
                 {page.subtitle && (
-                  <p className="text-sm font-medium text-accent mb-4 uppercase tracking-wider">
-                    {page.subtitle}
-                  </p>
+                  <div className="flex items-center gap-2 mb-5">
+                    <div className="w-8 h-px bg-accent" />
+                    <p className="text-xs font-semibold text-accent uppercase tracking-widest">
+                      {page.subtitle}
+                    </p>
+                  </div>
                 )}
-                <p className="text-base md:text-lg text-[#6B6B6B] leading-relaxed">
+                <p className="text-base md:text-lg text-[#6B6B6B] leading-[1.8]">
                   {page.description}
                 </p>
               </div>
             </div>
-
-            {/* Active section: image slides in with stagger */}
-            {isActive && page.image && (
-              <div
-                className="absolute top-0 h-full w-1/2 bg-cover bg-center pointer-events-none"
-                style={{
-                  [imgLeft ? "left" : "right"]: 0,
-                  backgroundImage: `url(${page.image})`,
-                  opacity: 0,
-                  transform: "translateY(40px)",
-                  transition: "opacity 0.8s ease, transform 0.8s cubic-bezier(0.33, 1, 0.68, 1)",
-                  transitionDelay: "0.1s",
-                }}
-                ref={(el) => {
-                  if (el && isActive) {
-                    requestAnimationFrame(() => {
-                      el.style.opacity = "1";
-                      el.style.transform = "translateY(0)";
-                    });
-                  }
-                }}
-              >
-                <div className="absolute inset-0 bg-black/15" />
-              </div>
-            )}
           </div>
         );
       })}
@@ -188,7 +158,7 @@ export default function AnimatedScroll({ pages, backTo }: AnimatedScrollProps) {
             className={`w-2 h-2 rounded-full transition-all duration-300 ${
               currentPage === i
                 ? "bg-accent scale-125"
-                : "bg-foreground/20 hover:bg-foreground/40"
+                : "bg-white/40 hover:bg-white/60"
             }`}
             aria-label={`Section ${i + 1}`}
           />
