@@ -9,30 +9,41 @@ export interface EngagementSection {
 }
 
 export interface EngagementPageData {
+  version: number;
   sections: EngagementSection[];
 }
 
 const STORAGE_PREFIX = "engagement-";
+const CURRENT_VERSION = 2;
 
 export function useEngagementData(slug: string, defaults: EngagementPageData) {
-  const [data, setData] = useState<EngagementPageData>(defaults);
+  const [data, setData] = useState<EngagementPageData>({
+    version: CURRENT_VERSION,
+    sections: defaults.sections,
+  });
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_PREFIX + slug);
       if (stored) {
-        setData(JSON.parse(stored));
+        const parsed = JSON.parse(stored);
+        if (parsed.version === CURRENT_VERSION) {
+          setData(parsed);
+        } else {
+          localStorage.removeItem(STORAGE_PREFIX + slug);
+        }
       }
     } catch {
-      /* ignore */
+      localStorage.removeItem(STORAGE_PREFIX + slug);
     }
   }, [slug]);
 
   const save = useCallback(
     (newData: EngagementPageData) => {
-      setData(newData);
-      localStorage.setItem(STORAGE_PREFIX + slug, JSON.stringify(newData));
+      const withVersion = { ...newData, version: CURRENT_VERSION };
+      setData(withVersion);
+      localStorage.setItem(STORAGE_PREFIX + slug, JSON.stringify(withVersion));
       setIsEditing(false);
     },
     [slug]
