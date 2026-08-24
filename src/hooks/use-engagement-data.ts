@@ -1,25 +1,24 @@
 import { useState, useEffect, useCallback } from "react";
 
-export interface EngagementSection {
-  heading: string;
-  subtitle?: string;
+export interface TimelineEvent {
+  date: string;
+  title: string;
   description: string;
-  leftImage?: string | null;
-  rightImage?: string | null;
+  image?: string | null;
 }
 
 export interface EngagementPageData {
   version: number;
-  sections: EngagementSection[];
+  events: TimelineEvent[];
 }
 
 const STORAGE_PREFIX = "engagement-";
-const CURRENT_VERSION = 2;
+const CURRENT_VERSION = 3;
 
 export function useEngagementData(slug: string, defaults: EngagementPageData) {
   const [data, setData] = useState<EngagementPageData>({
     version: CURRENT_VERSION,
-    sections: defaults.sections,
+    events: defaults.events,
   });
   const [isEditing, setIsEditing] = useState(false);
 
@@ -49,16 +48,36 @@ export function useEngagementData(slug: string, defaults: EngagementPageData) {
     [slug]
   );
 
-  const updateSection = useCallback(
-    (index: number, patch: Partial<EngagementSection>) => {
+  const addEvent = useCallback(
+    (event: TimelineEvent) => {
+      setData((prev) => ({
+        ...prev,
+        events: [...prev.events, event],
+      }));
+    },
+    []
+  );
+
+  const updateEvent = useCallback(
+    (index: number, patch: Partial<TimelineEvent>) => {
       setData((prev) => {
-        const sections = [...prev.sections];
-        sections[index] = { ...sections[index], ...patch };
-        return { ...prev, sections };
+        const events = [...prev.events];
+        events[index] = { ...events[index], ...patch };
+        return { ...prev, events };
       });
     },
     []
   );
 
-  return { data, isEditing, setIsEditing, save, updateSection };
+  const removeEvent = useCallback(
+    (index: number) => {
+      setData((prev) => ({
+        ...prev,
+        events: prev.events.filter((_, i) => i !== index),
+      }));
+    },
+    []
+  );
+
+  return { data, isEditing, setIsEditing, save, addEvent, updateEvent, removeEvent };
 }

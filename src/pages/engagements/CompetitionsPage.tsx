@@ -1,97 +1,44 @@
-import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
-import AnimatedScroll from "@/components/ui/animated-scroll";
-import type { ScrollPage } from "@/components/ui/animated-scroll";
-import { useEngagementData } from "@/hooks/use-engagement-data";
-import EngagementSectionEditor from "@/components/EngagementSectionEditor";
-import { useAdmin } from "@/contexts/AdminContext";
+import EngagementTimeline from "./EngagementTimeline";
+import type { EngagementPageData } from "@/hooks/use-engagement-data";
 
-const DEFAULTS = {
-  sections: [
+const DEFAULTS: EngagementPageData = {
+  version: 3,
+  events: [
     {
-      heading: "Compétitions",
-      subtitle: "Data Science & Algorithmique",
+      date: "En cours",
+      title: "Compétitions",
       description: "Formuler un problème, explorer les données, comparer des approches et apprendre de chaque itération. C'est ça, le vrai moteur.",
-      leftImage: null,
-      rightImage: null,
     },
     {
-      heading: "Data Science Challenge",
-      subtitle: "Kaggle & Hackathons",
+      date: "Kaggle & Hackathons",
+      title: "Data Science Challenge",
       description: "Participation à des challenges Kaggle et hackathons data. XGBoost, feature engineering, optimisation bayésienne : chaque compétition est un laboratoire.",
-      leftImage: null,
-      rightImage: null,
     },
     {
-      heading: "Algorithmique",
-      subtitle: "Structures de données & Complexité",
+      date: "Algorithmique",
+      title: "Structures de données & Complexité",
       description: "Les compétitions d'algorithmique affûtent la rigueur et la capacité à résoudre des problèmes sous contrainte. Du dynamic programming au graph theory, chaque problem set est un exercice de style.",
-      leftImage: null,
-      rightImage: null,
     },
     {
-      heading: "Esprit d'équipe",
-      subtitle: "Collaboration & Leadership",
+      date: "Collaboration",
+      title: "Esprit d'équipe",
       description: "Les meilleures solutions naissent de la collaboration. Travailler en équipe, défendre ses choix, adapter son approche : la compétition forge autant que le résultat final.",
-      leftImage: null,
-      rightImage: null,
     },
     {
-      heading: "Toujours progresser",
-      subtitle: "Résilience & Apprentissage",
+      date: "Vision",
+      title: "Toujours progresser",
       description: "Chaque défaite est une leçon. Chaque victoire, une confirmation que le processus fonctionne. L'important, c'est de revenir, encore et encore.",
-      leftImage: null,
-      rightImage: null,
-      rightImage: null,
     },
   ],
 };
 
 export default function CompetitionsPage() {
-  const { isAdmin } = useAdmin();
-  const { data, isEditing, setIsEditing, save, updateSection } = useEngagementData("competitions", DEFAULTS);
-
-  const pages: ScrollPage[] = data.sections.map((s) => ({
-    leftImage: s.leftImage || null,
-    rightImage: s.rightImage || null,
-    heading: s.heading,
-    subtitle: s.subtitle,
-    description: s.description,
-  }));
-
   return (
-    <div className="relative">
-      <Link
-        to="/engagements"
-        className="fixed top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-foreground/80 text-white text-sm font-medium backdrop-blur hover:bg-foreground transition-colors"
-      >
-        <ArrowLeft size={16} /> Retour
-      </Link>
-
-      <AnimatedScroll pages={pages} backTo="/engagements" />
-
-      {isAdmin && !isEditing && (
-        <button
-          onClick={() => setIsEditing(true)}
-          className="fixed bottom-8 right-8 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-white text-sm font-semibold shadow-lg hover:bg-accent/80 transition-colors"
-        >
-          Modifier les sections
-        </button>
-      )}
-
-      {isAdmin && isEditing && (
-        <>
-          {data.sections.map((section, i) => (
-            <EngagementSectionEditor key={i} section={section} index={i} onSave={updateSection} />
-          ))}
-          <button
-            onClick={() => save(data)}
-            className="fixed bottom-8 right-8 z-50 flex items-center gap-2 px-6 py-3 rounded-full bg-green-600 text-white text-sm font-semibold shadow-lg hover:bg-green-700 transition-colors"
-          >
-            Tout enregistrer
-          </button>
-        </>
-      )}
-    </div>
+    <EngagementTimeline
+      slug="competitions"
+      title="Compétitions"
+      subtitle="Data Science & Algorithmique"
+      defaults={DEFAULTS}
+    />
   );
 }
